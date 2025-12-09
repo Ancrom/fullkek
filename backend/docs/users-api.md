@@ -11,9 +11,9 @@ username: string                          - имя пользователя
 **Неуникальные**
 ```
 password: string                          - хэш пароля
+emailVerified: boolean                    - подтверждён или нет адрес электронной почты
 createdAt: Date                           - дата и время создания
 role: 'user' | 'admin' |'moderator'       - роль пользователя
-permissions: 'read' | 'write' | 'delete'  - права доступа
 firstName?: string                        - личное имя
 lastName?: string                         - личная фамилия
 avatarUrl?: string                        - ссылка на изображение
@@ -60,9 +60,10 @@ GET /users?page=1&limit=20
       "avatar": "https://example.com/avatar.jpg",
       "description": "Software developer",
       "role": "user",
+      "birthday": "12/25/2025",
       "isActive": true,
-      "lastLoginAt": "2024-01-15T10:30:00Z",
-      "createdAt": "2024-01-01T00:00:00Z"
+      "createdAt": "2024-01-01T00:00:00Z",
+      "phoneNumber": "+0-000-000-00-00"
     }
   ],
   "pagination": {
@@ -86,22 +87,23 @@ id: string - UUID пользователя
 ```
 Пример запроса:
 ```
-GET /api/users/550e8400-e29b-41d4-a716-446655440000
+GET /users/550e8400-e29b-41d4-a716-446655440000
 ```
 Успешный ответ (200 OK):
 ```
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "email": "john.doe@example.com",
-  "username": "johndoe",
-  "firstName": "John",
-  "lastName": "Doe",
-  "avatar": "https://example.com/avatar.jpg",
-  "description": "Software developer",
-  "role": "user",
-  "isActive": true,
-  "lastLoginAt": "2024-01-15T10:30:00Z",
-  "createdAt": "2024-01-01T00:00:00Z"
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "john.doe@example.com",
+    "username": "johndoe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "avatar": "https://example.com/avatar.jpg",
+    "description": "Software developer",
+    "role": "user",
+    "birthday": "12/25/2025",
+    "isActive": true,
+    "createdAt": "2024-01-01T00:00:00Z",
+    "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Коды ошибок:
@@ -113,37 +115,35 @@ GET /api/users/550e8400-e29b-41d4-a716-446655440000
 ```
 POST /users - создаёт нового пользователя
 ```
-Тело запроса:
-```
-{
-  "email": "jane.doe@example.com",
-  "username": "janedoe",
-  "password": "securePassword123",
-  "firstName": "Jane",
-  "lastName": "Doe",
-  "avatar": "https://example.com/avatar2.jpg"
-}
-```
 Поля тела запроса:
 ```
-email: string      - должен быть валидный email
-username: string   - 3-30 букв и цифр
-password: string   - минимум 6 символов
-firstName?: string - максимум 20 символов
-lastName?:         - максимум 20 символов
-avatar?: string    - валидный URL
+email: string        - должен быть валидный email
+username: string     - 3-30 букв и цифр
+password: string     - минимум 6 символов
+firstName?: string   - максимум 20 символов
+lastName?:           - максимум 20 символов
+avatar?: string      - валидный URL
+description?: string - максимум 500 символов
+birthday?: Date      - дата
+isActive: boolean
+phoneNumber?: string - валидный номер телефона
 ```
 Прииер запроса:
 ```
-POST /api/users
+POST /users
 Content-Type: application/json
 
 {
-  "email": "jane.doe@example.com",
-  "username": "janedoe",
-  "password": "securePassword123",
-  "firstName": "Jane",
-  "lastName": "Doe"
+    "email": "john.doe@example.com",
+    "username": "johndoe",
+    "password": "securePassword123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "avatar": "https://example.com/avatar.jpg",
+    "description": "Software developer",
+    "birthday": "12/25/2025",
+    "isActive": true,
+    "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Успешный ответ (201 Created):
@@ -196,28 +196,37 @@ description?:      - максимум 500 символов
 ```
 Пример запроса:
 ```
-PUT /api/users/550e8400-e29b-41d4-a716-446655440000
+PUT /users/550e8400-e29b-41d4-a716-446655440000
 Content-Type: application/json
 
 {
-  "firstName": "Johnathan",
-  "bio": "Senior software developer"
+    "email": "john.doe@example.com",
+    "password": "securePassword123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "avatar": "https://example.com/avatar.jpg",
+    "description": "Software developer",
+    "birthday": "12/25/2025",
+    "isActive": true,
+    "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Успешный ответ (200 ОК):
 ```
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "email": "john.doe@example.com",
-  "username": "johndoe",
-  "firstName": "Johnathan",
-  "lastName": "Doe",
-  "avatar": "https://example.com/new-avatar.jpg",
-  "description": "Senior software developer",
-  "role": "user",
-  "isActive": true,
-  "lastLoginAt": "2024-01-15T10:30:00Z",
-  "createdAt": "2024-01-01T00:00:00Z"
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "email": "jane.doe@example.com",
+    "username": "janedoe",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "avatar": null,
+    "description": null,
+    "role": "user",
+    "isActive": true,
+    "emailVerified": false,
+    "lastLoginAt": null,
+    "createdAt": "2024-01-16T14:30:00Z",
+    "updatedAt": "2024-01-16T14:30:00Z"
 }
 ```
 Коды ошибок:
@@ -237,7 +246,7 @@ id: string - UUID пользователя
 ```
 Пример запроса:
 ```
-DELETE /api/users/550e8400-e29b-41d4-a716-446655440000
+DELETE /users/550e8400-e29b-41d4-a716-446655440000
 ```
 Успешный ответ (204 No Content):
 ```
@@ -246,6 +255,6 @@ DELETE /api/users/550e8400-e29b-41d4-a716-446655440000
 Коды ошибок:
 ```
 400 Bad Request - Неверный формат ID
-404 Not Found - Пользователь не найден
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
