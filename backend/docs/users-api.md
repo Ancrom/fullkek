@@ -142,7 +142,6 @@ Content-Type: application/json
     "avatar": "https://example.com/avatar.jpg",
     "description": "Software developer",
     "birthday": "12/25/2025",
-    "isActive": true,
     "phoneNumber": "+0-000-000-00-00"
 }
 ```
@@ -207,7 +206,6 @@ Content-Type: application/json
     "avatar": "https://example.com/avatar.jpg",
     "description": "Software developer",
     "birthday": "12/25/2025",
-    "isActive": true,
     "phoneNumber": "+0-000-000-00-00"
 }
 ```
@@ -225,8 +223,7 @@ Content-Type: application/json
     "isActive": true,
     "emailVerified": false,
     "lastLoginAt": null,
-    "createdAt": "2024-01-16T14:30:00Z",
-    "updatedAt": "2024-01-16T14:30:00Z"
+    "createdAt": "2024-01-16T14:30:00Z"
 }
 ```
 Коды ошибок:
@@ -257,4 +254,5 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 400 Bad Request - Неверный формат ID
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
 
