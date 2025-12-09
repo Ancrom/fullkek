@@ -92,18 +92,18 @@ GET /users/550e8400-e29b-41d4-a716-446655440000
 Успешный ответ (200 OK):
 ```
 {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "email": "john.doe@example.com",
-    "username": "johndoe",
-    "firstName": "John",
-    "lastName": "Doe",
-    "avatar": "https://example.com/avatar.jpg",
-    "description": "Software developer",
-    "role": "user",
-    "birthday": "12/25/2025",
-    "isActive": true,
-    "createdAt": "2024-01-01T00:00:00Z",
-    "phoneNumber": "+0-000-000-00-00"
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "email": "john.doe@example.com",
+  "username": "johndoe",
+  "firstName": "John",
+  "lastName": "Doe",
+  "avatar": "https://example.com/avatar.jpg",
+  "description": "Software developer",
+  "role": "user",
+  "birthday": "12/25/2025",
+  "isActive": true,
+  "createdAt": "2024-01-01T00:00:00Z",
+  "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Коды ошибок:
@@ -125,10 +125,9 @@ lastName?:           - максимум 20 символов
 avatar?: string      - валидный URL
 description?: string - максимум 500 символов
 birthday?: Date      - дата
-isActive: boolean
 phoneNumber?: string - валидный номер телефона
 ```
-Прииер запроса:
+Пример запроса:
 ```
 POST /users
 Content-Type: application/json
@@ -159,8 +158,7 @@ Content-Type: application/json
   "isActive": true,
   "emailVerified": false,
   "lastLoginAt": null,
-  "createdAt": "2024-01-16T14:30:00Z",
-  "updatedAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z"
 }
 ```
 Коды ошибок:
@@ -180,18 +178,26 @@ id: string - UUID пользователя
 Тело запроса:
 ```
 {
-  "firstName": "Johnathan",
-  "lastName": "Doel",
-  "avatar": "https://example.com/new-avatar.jpg",
-  "description": "Senior software developer and team lead"
+  "email": "john.doe@example.com",
+  "password": "securePassword123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "avatar": "https://example.com/avatar.jpg",
+  "description": "Software developer",
+  "birthday": "12/25/2025",
+  "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Поля тела запроса:
 ```
-firstName?: string - максимум 20 символов
-lastName?:         - максимум 20 символов
-avatar?: string    - валидный URL
-description?:      - максимум 500 символов
+email: string        - должен быть валидный email
+password: string     - минимум 6 символов
+firstName?: string   - максимум 20 символов
+lastName?:           - максимум 20 символов
+avatar?: string      - валидный URL
+description?: string - максимум 500 символов
+birthday?: Date      - дата
+phoneNumber?: string - валидный номер телефона
 ```
 Пример запроса:
 ```
@@ -254,5 +260,6 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 400 Bad Request - Неверный формат ID
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
 
 
