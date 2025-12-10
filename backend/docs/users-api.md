@@ -8,20 +8,23 @@ id: string                                - идентификатор
 email: string                             - адрес электронной почты
 username: string                          - имя пользователя
 ```
-**Неуникальные**
+**Управляемые сервером (read-only)**
 ```
-password: string                          - хэш пароля
 emailVerified: boolean                    - подтверждён или нет адрес электронной почты
 createdAt: Date                           - дата и время создания
 role: 'user' | 'admin' |'moderator'       - роль пользователя
+isActive?: boolean                        - статус активности
+lastLoginAt: Date                         - дата и время последней авторизации
+```
+**Доступные для изменения**
+```
+password: string                          - хэш пароля
 firstName?: string                        - личное имя
 lastName?: string                         - личная фамилия
 avatarUrl?: string                        - ссылка на изображение
 description?: string                      - описание
 birthday?: Date                           - день рождения
 phoneNumber?: string                      - номер телефона
-isActive?: boolean                        - статус активности
-lastLoginAt: Date                         - дата и время последней авторизации
 ```
 
 ## **Users API**
@@ -154,6 +157,8 @@ Content-Type: application/json
   "lastName": "Doe",
   "avatarUrl": null,
   "description": null,
+  "birthday": "2025-12-25",
+  "phoneNumber": "+0-000-000-00-00"
   "role": "user",
   "isActive": true,
   "emailVerified": false,
@@ -205,31 +210,33 @@ PUT /users/550e8400-e29b-41d4-a716-446655440000
 Content-Type: application/json
 
 {
-    "email": "john.doe@example.com",
-    "password": "securePassword123",
-    "firstName": "John",
-    "lastName": "Doe",
-    "avatarUrl": "https://example.com/avatar.jpg",
-    "description": "Software developer",
-    "birthday": "12/25/2025",
-    "phoneNumber": "+0-000-000-00-00"
+  "email": "john.doe@example.com",
+  "password": "securePassword123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "avatarUrl": "https://example.com/avatar.jpg",
+  "description": "Software developer",
+  "birthday": "12/25/2025",
+  "phoneNumber": "+0-000-000-00-00"
 }
 ```
 Успешный ответ (200 ОК):
 ```
 {
-    "id": "660e8400-e29b-41d4-a716-446655440001",
-    "email": "jane.doe@example.com",
-    "username": "janedoe",
-    "firstName": "Jane",
-    "lastName": "Doe",
-    "avatarUrl": null,
-    "description": null,
-    "role": "user",
-    "isActive": true,
-    "emailVerified": false,
-    "lastLoginAt": null,
-    "createdAt": "2024-01-16T14:30:00Z"
+  "id": "660e8400-e29b-41d4-a716-446655440001",
+  "email": "jane.doe@example.com",
+  "username": "janedoe",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "avatarUrl": null,
+  "description": null,
+  "birthday": "2025-12-25",
+  "phoneNumber": "+0-000-000-00-00"
+  "role": "user",
+  "isActive": true,
+  "emailVerified": false,
+  "lastLoginAt": null,
+  "createdAt": "2024-01-16T14:30:00Z"
 }
 ```
 Коды ошибок:
@@ -260,6 +267,7 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 400 Bad Request - Неверный формат ID
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
 
 
 
