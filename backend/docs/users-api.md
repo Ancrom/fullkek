@@ -57,7 +57,7 @@ GET /users?page=1&limit=20
       "username": "johndoe",
       "firstName": "John",
       "lastName": "Doe",
-      "avatar": "https://example.com/avatar.jpg",
+      "avatarUrl": "https://example.com/avatar.jpg",
       "description": "Software developer",
       "role": "user",
       "birthday": "12/25/2025",
@@ -97,7 +97,7 @@ GET /users/550e8400-e29b-41d4-a716-446655440000
   "username": "johndoe",
   "firstName": "John",
   "lastName": "Doe",
-  "avatar": "https://example.com/avatar.jpg",
+  "avatarUrl": "https://example.com/avatar.jpg",
   "description": "Software developer",
   "role": "user",
   "birthday": "12/25/2025",
@@ -122,7 +122,7 @@ username: string     - 3-30 букв и цифр
 password: string     - минимум 6 символов
 firstName?: string   - максимум 20 символов
 lastName?:           - максимум 20 символов
-avatar?: string      - валидный URL
+avatarUrl?: string    - валидный URL
 description?: string - максимум 500 символов
 birthday?: Date      - дата
 phoneNumber?: string - валидный номер телефона
@@ -138,7 +138,7 @@ Content-Type: application/json
     "password": "securePassword123",
     "firstName": "John",
     "lastName": "Doe",
-    "avatar": "https://example.com/avatar.jpg",
+    "avatarUrl": "https://example.com/avatar.jpg",
     "description": "Software developer",
     "birthday": "12/25/2025",
     "phoneNumber": "+0-000-000-00-00"
@@ -152,7 +152,7 @@ Content-Type: application/json
   "username": "janedoe",
   "firstName": "Jane",
   "lastName": "Doe",
-  "avatar": null,
+  "avatarUrl": null,
   "description": null,
   "role": "user",
   "isActive": true,
@@ -182,7 +182,7 @@ id: string - UUID пользователя
   "password": "securePassword123",
   "firstName": "John",
   "lastName": "Doe",
-  "avatar": "https://example.com/avatar.jpg",
+  "avatarUrl": "https://example.com/avatar.jpg",
   "description": "Software developer",
   "birthday": "12/25/2025",
   "phoneNumber": "+0-000-000-00-00"
@@ -194,7 +194,7 @@ email: string        - должен быть валидный email
 password: string     - минимум 6 символов
 firstName?: string   - максимум 20 символов
 lastName?:           - максимум 20 символов
-avatar?: string      - валидный URL
+avatarUrl?: string   - валидный URL
 description?: string - максимум 500 символов
 birthday?: Date      - дата
 phoneNumber?: string - валидный номер телефона
@@ -209,7 +209,7 @@ Content-Type: application/json
     "password": "securePassword123",
     "firstName": "John",
     "lastName": "Doe",
-    "avatar": "https://example.com/avatar.jpg",
+    "avatarUrl": "https://example.com/avatar.jpg",
     "description": "Software developer",
     "birthday": "12/25/2025",
     "phoneNumber": "+0-000-000-00-00"
@@ -223,7 +223,7 @@ Content-Type: application/json
     "username": "janedoe",
     "firstName": "Jane",
     "lastName": "Doe",
-    "avatar": null,
+    "avatarUrl": null,
     "description": null,
     "role": "user",
     "isActive": true,
@@ -260,6 +260,7 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 400 Bad Request - Неверный формат ID
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
 
 
 
