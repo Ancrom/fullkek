@@ -122,15 +122,15 @@ POST /users - создаёт нового пользователя
 ```
 Поля тела запроса:
 ```
-email: string        - должен быть валидный email
-username: string     - 3-30 букв и цифр
-password: string     - минимум 6 символов
-firstName?: string   - максимум 20 символов
-lastName?:           - максимум 20 символов
-avatarUrl?: string    - валидный URL
-description?: string - максимум 500 символов
-birthday?: Date      - дата
-phoneNumber?: string - валидный номер телефона
+email: string            - должен быть валидный email
+username: string         - 3-30 букв и цифр
+password: string         - минимум 6 символов
+firstName?: string       - максимум 20 символов
+lastName?:               - максимум 20 символов
+avatarUrl?: string       - валидный URL
+description?: string     - максимум 500 символов
+birthday?: Date          - дата
+phoneNumber?: string     - валидный номер телефона
 ```
 Пример запроса:
 ```
@@ -197,14 +197,14 @@ id: string - UUID пользователя
 ```
 Поля тела запроса:
 ```
-email: string        - должен быть валидный email
-password: string     - минимум 6 символов
-firstName?: string   - максимум 20 символов
-lastName?:           - максимум 20 символов
-avatarUrl?: string   - валидный URL
-description?: string - максимум 500 символов
-birthday?: Date      - дата
-phoneNumber?: string - валидный номер телефона
+email: string              - должен быть валидный email
+password: string           - минимум 6 символов
+firstName?: string         - максимум 20 символов
+lastName?:                 - максимум 20 символов
+avatarUrl?: string         - валидный URL
+description?: string       - максимум 500 символов
+birthday?: Date            - дата
+phoneNumber?: string       - валидный номер телефона
 ```
 Пример запроса:
 ```

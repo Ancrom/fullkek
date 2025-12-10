@@ -1,0 +1,38 @@
+import type { User } from "../types/user.types.ts";
+
+export const users: User[] = [
+  {
+    id: "1",
+    email: "test@test.com",
+    username: "testuser",
+    emailVerified: true,
+    createdAt: new Date(),
+    role: "user",
+    isActive: true,
+    lastLoginAt: new Date(),
+    password: "hashedpassword",
+    firstName: "Test",
+    lastName: "User",
+    avatarUrl: "https://example.com/avatar.jpg",
+    description: "This is a test user",
+    birthday: new Date("2000-01-01"),
+    phoneNumber: "+1234567890",
+  },
+  {
+    id: "2",
+    email: "test@test.com",
+    username: "testuser2",
+    emailVerified: true,
+    createdAt: new Date(),
+    role: "user",
+    isActive: true,
+    lastLoginAt: new Date(),
+    password: "hashedpassword",
+    firstName: "Test2",
+    lastName: "User2",
+    avatarUrl: "https://example.com/avatar.jpg",
+    description: "This is a test user",
+    birthday: new Date("2000-01-01"),
+    phoneNumber: "+1234567890",
+  },
+];
