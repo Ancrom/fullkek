@@ -95,18 +95,20 @@ GET /users/550e8400-e29b-41d4-a716-446655440000
 Успешный ответ (200 OK):
 ```
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "id": "660e8400-e29b-41d4-a716-446655440001",
   "email": "john.doe@example.com",
   "username": "johndoe",
   "firstName": "John",
   "lastName": "Doe",
   "avatarUrl": "https://example.com/avatar.jpg",
   "description": "Software developer",
+  "birthday": "2025-12-25",
+  "phoneNumber": "+0-000-000-00-00",
   "role": "user",
-  "birthday": "12/25/2025",
   "isActive": true,
-  "createdAt": "2024-01-01T00:00:00Z",
-  "phoneNumber": "+0-000-000-00-00"
+  "emailVerified": false,
+  "lastLoginAt": "2024-01-20T10:15:00Z",
+  "createdAt": "2024-01-16T14:30:00Z"
 }
 ```
 Коды ошибок:
@@ -267,6 +269,7 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 400 Bad Request - Неверный формат ID
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
+
 
 
 
