@@ -16,3 +16,12 @@ export interface User {
   phoneNumber?: string;
 }
 
+type readOnlyProps =
+  | "id"
+  | "emailVerified"
+  | "role"
+  | "createdAt"
+  | "lastLoginAt"
+  | "isActive";
+
+export type UserCreateUpdate = Omit<User, readOnlyProps>;
