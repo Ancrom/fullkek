@@ -6,3 +6,7 @@ node_modules/
 public/
 
 .vscode/
+
+dist/
+
+.eslintrc.cjs
