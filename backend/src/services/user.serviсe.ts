@@ -1,6 +1,11 @@
 import { validate } from "uuid";
 import type { UserDto } from "../types/user.types";
 import { UserRepository } from "../modules/user.repository";
+import {
+  ValidationError,
+  NotFoundError,
+  ConflictError,
+} from "../errors/HttpError";
 
 export class userService {
   constructor(private userRepository: UserRepository) {
@@ -41,15 +46,15 @@ export class userService {
 
   getUserById(id: string) {
     if (!id) {
-      throw new Error("ID is required");
+      throw new ValidationError("ID is required");
     }
     if (!validate(id)) {
-      throw new Error("ID is not valid");
+      throw new ValidationError("ID is not valid UUID");
     }
 
     const user = this.userRepository.getUserById(id);
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
     return this.userRepository.getUserById(id);
   }
@@ -58,7 +63,9 @@ export class userService {
     const missedFields = this.validadeUser(user);
 
     if (missedFields) {
-      throw new Error(`The following fields are required: ${missedFields}`);
+      throw new ValidationError(
+        `The following fields are required: ${missedFields}`
+      );
     }
 
     const userExists = this.userRepository.getUserByEmailOrUsername(
@@ -66,27 +73,29 @@ export class userService {
       user.username
     );
     if (userExists) {
-      throw new Error("User already exists");
+      throw new ConflictError("User already exists");
     }
     return this.userRepository.createUser(user);
   }
 
   updateUser(id: string, user: UserDto) {
     if (!id) {
-      throw new Error("ID is required");
+      throw new ValidationError("ID is required");
     }
     if (!validate(id)) {
-      throw new Error("ID is not valid UUID");
+      throw new ValidationError("ID is not valid UUID");
     }
 
     const missedFields = this.validadeUser(user);
     const updatedUser = this.userRepository.updateUser(id, user);
 
     if (!updatedUser) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
     if (missedFields) {
-      throw new Error(`The following fields are required: ${missedFields}`);
+      throw new ValidationError(
+        `The following fields are required: ${missedFields}`
+      );
     }
 
     return updatedUser;
@@ -94,7 +103,7 @@ export class userService {
 
   deleteUser(id: string) {
     if (!validate(id)) {
-      throw new Error("ID is not valid");
+			throw new ValidationError("ID is not valid UUID");
     }
     return this.userRepository.deleteUser(id);
   }
