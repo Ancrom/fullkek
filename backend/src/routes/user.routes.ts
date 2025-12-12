@@ -20,6 +20,7 @@ router.post("/", createUser);
 
 // PUT /users/:id - обновить пользователя по ID
 router.put("/:id", updateUser);
+router.put("/", updateUser);
 
 // DELETE /users/:id - удалить пользователя по ID
 router.delete("/:id", deleteUser);

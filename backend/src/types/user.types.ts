@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   username: string;
@@ -24,4 +24,4 @@ type readOnlyProps =
   | "lastLoginAt"
   | "isActive";
 
-export type UserCreateUpdate = Omit<User, readOnlyProps>;
+export type UserDto = Omit<IUser, readOnlyProps>;

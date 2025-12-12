@@ -1,20 +1,26 @@
 import { v4 as uuidv4 } from "uuid";
 
-import type { User, UserCreateUpdate } from "../types/user.types.ts";
+import type { IUser, UserDto } from "../types/user.types";
 
 export class UserRepository {
-  users: User[] = [];
+  private users: IUser[] = [];
 
-  getAllUsers(): User[] {
+  getAllUsers(): IUser[] {
     return this.users;
   }
 
-  getUserById(id: string): User | undefined {
+  getUserById(id: string): IUser | undefined {
     return this.users.find((user) => user.id === id);
   }
 
-  createUser(user: UserCreateUpdate): User {
-    const newUser: User = {
+  getUserByEmailOrUsername(email: string, username: string): IUser | undefined {
+    return this.users.find(
+      (user) => user.email === email || user.username === username
+    );
+  }
+
+  createUser(user: UserDto): IUser {
+    const newUser: IUser = {
       ...user,
       id: uuidv4(),
       emailVerified: false,
@@ -27,9 +33,9 @@ export class UserRepository {
     return newUser;
   }
 
-  updateUser(id: string, data: UserCreateUpdate): User | undefined {
-    const user = this.users.find((user) => user.id === id);
+  updateUser(id: string, data: UserDto): IUser | undefined {
     const index = this.users.findIndex((user) => user.id === id);
+    const user = this.users[index];
     if (user) {
       this.users[index] = { ...user, ...data };
       return this.users[index];
