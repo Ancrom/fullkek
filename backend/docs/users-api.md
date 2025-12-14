@@ -2,13 +2,13 @@
 
 ## **Базовые поля**
 
-**Уникальные**
+**Unique**
 ```
 id: string                                - идентификатор
 email: string                             - адрес электронной почты
 username: string                          - имя пользователя
 ```
-**Управляемые сервером (read-only)**
+**Read-only**
 ```
 emailVerified: boolean                    - подтверждён или нет адрес электронной почты
 createdAt: Date                           - дата и время создания
@@ -16,7 +16,7 @@ role: 'user' | 'admin' |'moderator'       - роль пользователя
 isActive?: boolean                        - статус активности
 lastLoginAt: Date                         - дата и время последней авторизации
 ```
-**Доступные для изменения**
+**Mutable**
 ```
 password: string                          - хэш пароля
 firstName?: string                        - личное имя
@@ -270,8 +270,11 @@ DELETE /users/550e8400-e29b-41d4-a716-446655440000
 500 Internal Server Error - Внутренняя ошибка сервера
 ```
 
-
-
-
-
-
+### **Краткая таблица**
+| Метод | Endpoint        | Идемпотентность |
+|-------|-----------------|-----------------|
+| GET   | /users          | ✅ Да           |
+| GET   | /users/{id}     | ✅ Да           |
+| POST  | /users          | ❌ Нет          |
+| PUT   | /users/{id}     | ✅ Да           |
+| DELETE| /users/{id}     | ✅ Да           |
