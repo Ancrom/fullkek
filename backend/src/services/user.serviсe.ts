@@ -1,4 +1,3 @@
-import { validate } from "uuid";
 import type { UserDto } from "../types/user.types";
 import { UserRepository } from "../modules/user.repository";
 import {
@@ -7,9 +6,15 @@ import {
   ConflictError,
 } from "../errors/HttpError";
 
-export class userService {
+export class UserService {
   constructor(private userRepository: UserRepository) {
     this.userRepository = userRepository;
+  }
+
+  isUUID(id: string) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      id
+    );
   }
 
   validadeUser(user: UserDto) {
@@ -48,7 +53,7 @@ export class userService {
     if (!id) {
       throw new ValidationError("ID is required");
     }
-    if (!validate(id)) {
+    if (!this.isUUID(id)) {
       throw new ValidationError("ID is not valid UUID");
     }
 
@@ -82,7 +87,7 @@ export class userService {
     if (!id) {
       throw new ValidationError("ID is required");
     }
-    if (!validate(id)) {
+    if (!this.isUUID(id)) {
       throw new ValidationError("ID is not valid UUID");
     }
 
@@ -102,8 +107,8 @@ export class userService {
   }
 
   deleteUser(id: string) {
-    if (!validate(id)) {
-			throw new ValidationError("ID is not valid UUID");
+    if (!this.isUUID(id)) {
+      throw new ValidationError("ID is not valid UUID");
     }
     return this.userRepository.deleteUser(id);
   }

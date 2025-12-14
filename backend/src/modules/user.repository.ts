@@ -1,7 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
 
 import type { IUser, UserDto } from "../types/user.types";
-
 export class UserRepository {
   private users: IUser[] = [];
 
@@ -22,7 +21,7 @@ export class UserRepository {
   createUser(user: UserDto): IUser {
     const newUser: IUser = {
       ...user,
-      id: uuidv4(),
+      id: randomUUID(),
       emailVerified: false,
       createdAt: new Date(),
       lastLoginAt: null,
@@ -47,3 +46,5 @@ export class UserRepository {
     this.users = this.users.filter((user) => user.id !== id);
   }
 }
+
+export const userRepository = new UserRepository();
