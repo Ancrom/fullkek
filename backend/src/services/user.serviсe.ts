@@ -6,6 +6,11 @@ import {
   ConflictError,
 } from "../errors/HttpError";
 
+type PaginationParams = {
+  page: number;
+  limit: number;
+};
+
 export class UserService {
   constructor(private userRepository: UserRepository) {
     this.userRepository = userRepository;
@@ -45,8 +50,28 @@ export class UserService {
     return missedFields.length === 0 ? null : missedFields.join(", ");
   }
 
-  getAllUsers() {
-    return this.userRepository.getAllUsers();
+  getAllUsers({ page, limit }: PaginationParams) {
+    if (page < 1 || limit < 1) {
+      throw new ValidationError("Page and limit must be greater than 0");
+    }
+
+    const users = this.userRepository.getAllUsers();
+    const total = users.length;
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    const data = users.slice(start, end);
+
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   getUserById(id: string) {
