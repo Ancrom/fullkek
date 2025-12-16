@@ -6,20 +6,23 @@ describe("UserService", () => {
   let userService: UserService;
   let repo: UserRepository;
   let seededUser: IUser;
+  let userFields = {
+    email: "test@test.com",
+    username: "testuser",
+    password: "hashedpassword",
+    firstName: "Test",
+    lastName: "User",
+    avatarUrl: "https://example.com/avatar.jpg",
+    description: "Seed user",
+    birthday: new Date("2000-01-01"),
+    phoneNumber: "1234567890",
+  };
 
   beforeEach(() => {
     repo = new UserRepository();
     userService = new UserService(repo);
     seededUser = userService.createUser({
-      email: "test@test.com",
-      username: "testuser",
-      password: "hashedpassword",
-      firstName: "Test",
-      lastName: "User",
-      avatarUrl: "https://example.com/avatar.jpg",
-      description: "Seed user",
-      birthday: new Date("2000-01-01"),
-      phoneNumber: "1234567890",
+      ...userFields,
     });
   });
 
@@ -28,44 +31,25 @@ describe("UserService", () => {
     it("should not allow duplicate users", () => {
       expect(() => {
         userService.createUser({
-          email: "test@test.com",
-          username: "testuser",
-          password: "hashedpassword",
-          firstName: "Test",
-          lastName: "User",
-          avatarUrl: "https://example.com/avatar.jpg",
-          description: "Seed user",
-          birthday: new Date("2000-01-01"),
-          phoneNumber: "1234567890",
+          ...userFields,
         });
       }).toThrow("User already exists");
     });
     it("should require email, username, and password", () => {
       expect(() => {
         userService.createUser({
-          email: "test2@test.com",
-          username: "testuser2",
+          ...userFields,
+          email: "",
+          username: "",
           password: "",
-          firstName: "Test",
-          lastName: "User",
-          avatarUrl: "https://example.com/avatar.jpg",
-          description: "Seed user",
-          birthday: new Date("2000-01-01"),
-          phoneNumber: "1234567890",
         });
       }).toThrow("email, username and password are required");
     });
     it("should create a new user", () => {
       const user = userService.createUser({
-        email: "test3@test.com",
-        username: "testuser3",
-        password: "hashedpassword",
-        firstName: "Test",
-        lastName: "User",
-        avatarUrl: "https://example.com/avatar.jpg",
-        description: "Seed user",
-        birthday: new Date("2000-01-01"),
-        phoneNumber: "1234567890",
+        ...userFields,
+        email: "test2@test.com",
+        username: "testuser2",
       });
       expect(user.id).toBeDefined();
     });
@@ -135,45 +119,27 @@ describe("UserService", () => {
   describe("updateUser", () => {
     it("should update a user", () => {
       const updatedUser = userService.updateUser(seededUser.id, {
+        ...userFields,
         email: "updated@test.com",
         username: "updateduser",
-        password: "hashedpassword",
-        firstName: "Test",
-        lastName: "User",
-        avatarUrl: "https://example.com/avatar.jpg",
-        description: "Seed user",
-        birthday: new Date("2000-01-01"),
-        phoneNumber: "1234567890",
       });
       expect(updatedUser.email).toBe("updated@test.com");
     });
     it("should throw an error for missing id", () => {
       expect(() => {
         userService.updateUser("", {
+          ...userFields,
           email: "updated@test.com",
           username: "updateduser",
-          password: "hashedpassword",
-          firstName: "Test",
-          lastName: "User",
-          avatarUrl: "https://example.com/avatar.jpg",
-          description: "Seed user",
-          birthday: new Date("2000-01-01"),
-          phoneNumber: "1234567890",
         });
       }).toThrow("ID is required");
     });
     it("should throw an error for invalid id", () => {
       expect(() => {
         userService.updateUser("invalid-id", {
+          ...userFields,
           email: "updated@test.com",
           username: "updateduser",
-          password: "hashedpassword",
-          firstName: "Test",
-          lastName: "User",
-          avatarUrl: "https://example.com/avatar.jpg",
-          description: "Seed user",
-          birthday: new Date("2000-01-01"),
-          phoneNumber: "1234567890",
         });
       }).toThrow("ID is not valid UUID");
     });
