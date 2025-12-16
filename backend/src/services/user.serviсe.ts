@@ -1,4 +1,4 @@
-import type { UserDto } from "../types/user.types";
+import type { IUser, CreateUserDto, UpdateUserDto } from "../types/user.types";
 import { UserRepository } from "../modules/user.repository";
 import {
   ValidationError,
@@ -7,13 +7,13 @@ import {
 } from "../errors/HttpError";
 
 type PaginationParams = {
-  page: number;
-  limit: number;
+  page: string | number | undefined;
+  limit: string | number | undefined;
 };
 
 export class UserService {
-  constructor(private userRepository: UserRepository) {
-    this.userRepository = userRepository;
+  constructor(private repo: UserRepository) {
+    this.repo = repo;
   }
 
   isUUID(id: string) {
@@ -22,54 +22,48 @@ export class UserService {
     );
   }
 
-  validadeUser(user: UserDto) {
-    const requiredFields: (keyof UserDto)[] = [
-      "email",
-      "username",
-      "password",
-      "firstName",
-      "lastName",
-      "avatarUrl",
-      "description",
-      "birthday",
-      "phoneNumber",
-    ];
-
-    const missedFields: (keyof UserDto)[] = [];
-
-    requiredFields.forEach((field) => {
-      if (
-        user[field] === undefined ||
-        user[field] === null ||
-        user[field] === ""
-      ) {
-        missedFields.push(field);
-      }
-    });
-
-    return missedFields.length === 0 ? null : missedFields.join(", ");
-  }
-
-  getAllUsers({ page, limit }: PaginationParams) {
-    if (page < 1 || limit < 1) {
-      throw new ValidationError("Page and limit must be greater than 0");
+  getPage(params: PaginationParams) {
+    if (
+      params.page === "" ||
+      params.limit === "" ||
+      params.page === undefined ||
+      params.limit === undefined
+    ) {
+      throw new ValidationError(
+        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      );
     }
 
-    const users = this.userRepository.getAllUsers();
+    const pageNum = Number(params.page);
+    const limitNum = Number(params.limit);
+
+    if (
+      !Number.isInteger(pageNum) ||
+      !Number.isInteger(limitNum) ||
+      pageNum < 1 ||
+      limitNum < 1 ||
+      limitNum > 100
+    ) {
+      throw new ValidationError(
+        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      );
+    }
+
+    const users = this.repo.getAllUsers();
     const total = users.length;
 
-    const start = (page - 1) * limit;
-    const end = start + limit;
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
 
-    const data = users.slice(start, end);
+    const data: IUser[] = users.slice(start, end);
 
     return {
       data,
       pagination: {
-        page,
-        limit,
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNum),
       },
     };
   }
@@ -82,33 +76,51 @@ export class UserService {
       throw new ValidationError("ID is not valid UUID");
     }
 
-    const user = this.userRepository.getUserById(id);
+    const user = this.repo.getUserById(id);
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    return this.userRepository.getUserById(id);
+    return user;
   }
 
-  createUser(user: UserDto) {
-    const missedFields = this.validadeUser(user);
-
-    if (missedFields) {
-      throw new ValidationError(
-        `The following fields are required: ${missedFields}`
-      );
+  createUser(dto: CreateUserDto) {
+    if (!dto.email || !dto.username || !dto.password) {
+      throw new ValidationError("email, username and password are required");
     }
 
-    const userExists = this.userRepository.getUserByEmailOrUsername(
-      user.email,
-      user.username
+    const userExists = this.repo.getUserByEmailOrUsername(
+      dto.email,
+      dto.username
     );
     if (userExists) {
       throw new ConflictError("User already exists");
     }
-    return this.userRepository.createUser(user);
+
+    const user: IUser = {
+      id: crypto.randomUUID(),
+
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+
+      emailVerified: false,
+      createdAt: new Date(),
+      role: "user",
+      isActive: true,
+      lastLoginAt: null,
+
+      firstName: dto.firstName ?? null,
+      lastName: dto.lastName ?? null,
+      avatarUrl: dto.avatarUrl ?? null,
+      description: dto.description ?? null,
+      birthday: dto.birthday ?? null,
+      phoneNumber: dto.phoneNumber ?? null,
+    };
+
+    return this.repo.createUser(user);
   }
 
-  updateUser(id: string, user: UserDto) {
+  updateUser(id: string, dto: UpdateUserDto): IUser {
     if (!id) {
       throw new ValidationError("ID is required");
     }
@@ -116,25 +128,51 @@ export class UserService {
       throw new ValidationError("ID is not valid UUID");
     }
 
-    const missedFields = this.validadeUser(user);
-    const updatedUser = this.userRepository.updateUser(id, user);
-
-    if (!updatedUser) {
+    const userExists = this.repo.getUserById(id);
+    if (!userExists) {
       throw new NotFoundError("User not found");
     }
-    if (missedFields) {
-      throw new ValidationError(
-        `The following fields are required: ${missedFields}`
-      );
+
+    const conflict = this.repo.getUserByEmailOrUsername(
+      dto.email,
+      dto.username
+    );
+
+    if (conflict && conflict.id !== id) {
+      throw new ConflictError("Email or username already in use");
     }
 
-    return updatedUser;
+    const updatedUser: IUser = {
+      id: id,
+
+      emailVerified: userExists.emailVerified,
+      createdAt: userExists.createdAt,
+      role: userExists.role,
+      isActive: userExists.isActive,
+      lastLoginAt: userExists.lastLoginAt,
+
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+
+      firstName: dto.firstName ?? null,
+      lastName: dto.lastName ?? null,
+      avatarUrl: dto.avatarUrl ?? null,
+      description: dto.description ?? null,
+      birthday: dto.birthday ?? null,
+      phoneNumber: dto.phoneNumber ?? null,
+    };
+
+    return this.repo.updateUser(id, updatedUser);
   }
 
   deleteUser(id: string) {
+    if (!id) {
+      throw new ValidationError("ID is required");
+    }
     if (!this.isUUID(id)) {
       throw new ValidationError("ID is not valid UUID");
     }
-    return this.userRepository.deleteUser(id);
+    return this.repo.deleteUser(id);
   }
 }

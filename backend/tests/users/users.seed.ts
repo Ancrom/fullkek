@@ -2,7 +2,7 @@
 import { UserService } from "../../src/services/user.serviсe";
 
 export function seedUsers(userService: UserService) {
-  userService.createUser({
+  return userService.createUser({
     email: "test@test.com",
     username: "testuser",
     password: "hashedpassword",

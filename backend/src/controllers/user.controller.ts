@@ -6,19 +6,29 @@ import { HttpError } from "../errors/HttpError";
 
 const userServiceIns = new UserService(userRepository);
 
+function handleError(res: Response, e: unknown) {
+  if (e instanceof HttpError) {
+    res.status(e.status).json({
+      code: e.code,
+      message: e.message,
+    });
+    return;
+  }
+
+  return res.status(500).json({
+    code: "INTERNAL_ERROR",
+    message: "Internal server error",
+  });
+}
+
 export const getUsers = (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
+  const page = req.query.page as string | undefined;
+  const limit = req.query.limit as string | undefined;
 
   try {
-    res.status(200).json(userServiceIns.getAllUsers({ page, limit }));
-  } catch (e: any) {
-    if (e instanceof HttpError) {
-      return res.status(e.status).json({
-        code: e.code,
-        message: e.message,
-      });
-    }
+    res.status(200).json(userServiceIns.getPage({ page, limit }));
+  } catch (e) {
+    return handleError(res, e);
   }
 };
 
@@ -27,13 +37,8 @@ export const getUserById = (req: Request, res: Response) => {
   try {
     const user = userServiceIns.getUserById(id);
     res.status(200).json(user);
-  } catch (e: any) {
-    if (e instanceof HttpError) {
-      return res.status(e.status).json({
-        code: e.code,
-        message: e.message,
-      });
-    }
+  } catch (e) {
+    return handleError(res, e);
   }
 };
 
@@ -42,13 +47,8 @@ export const createUser = (req: Request, res: Response) => {
   try {
     const createdUser = userServiceIns.createUser(user);
     return res.status(201).json(createdUser);
-  } catch (e: any) {
-    if (e instanceof HttpError) {
-      return res.status(e.status).json({
-        code: e.code,
-        message: e.message,
-      });
-    }
+  } catch (e) {
+    return handleError(res, e);
   }
 };
 
@@ -58,13 +58,8 @@ export const updateUser = (req: Request, res: Response) => {
   try {
     const updatedUser = userServiceIns.updateUser(id, user);
     return res.status(200).json(updatedUser);
-  } catch (e: any) {
-    if (e instanceof HttpError) {
-      return res.status(e.status).json({
-        code: e.code,
-        message: e.message,
-      });
-    }
+  } catch (e) {
+    return handleError(res, e);
   }
 };
 
@@ -73,12 +68,7 @@ export const deleteUser = (req: Request, res: Response) => {
   try {
     userServiceIns.deleteUser(id);
     return res.status(200).json({ message: "User deleted successfully" });
-  } catch (e: any) {
-    if (e instanceof HttpError) {
-      return res.status(e.status).json({
-        code: e.code,
-        message: e.message,
-      });
-    }
+  } catch (e) {
+    return handleError(res, e);
   }
 };

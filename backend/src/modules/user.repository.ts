@@ -1,11 +1,9 @@
-import { randomUUID } from "crypto";
-
-import type { IUser, UserDto } from "../types/user.types";
+import type { IUser, UpdateUserDto } from "../types/user.types";
 export class UserRepository {
   private users: IUser[] = [];
 
   getAllUsers(): IUser[] {
-    return this.users;
+    return [...this.users];
   }
 
   getUserById(id: string): IUser | undefined {
@@ -18,28 +16,16 @@ export class UserRepository {
     );
   }
 
-  createUser(user: UserDto): IUser {
-    const newUser: IUser = {
-      ...user,
-      id: randomUUID(),
-      emailVerified: false,
-      createdAt: new Date(),
-      lastLoginAt: null,
-      isActive: true,
-      role: "user",
-    };
-    this.users.push(newUser);
-    return newUser;
+  createUser(user: IUser): IUser {
+    this.users.push(user);
+    return user;
   }
 
-  updateUser(id: string, data: UserDto): IUser | undefined {
+  updateUser(id: string, data: UpdateUserDto): IUser {
     const index = this.users.findIndex((user) => user.id === id);
     const user = this.users[index];
-    if (user) {
-      this.users[index] = { ...user, ...data };
-      return this.users[index];
-    }
-    return undefined;
+    this.users[index] = { ...user, ...data };
+    return this.users[index];
   }
 
   deleteUser(id: string): void {
