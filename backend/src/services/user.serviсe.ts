@@ -22,6 +22,79 @@ export class UserService {
     );
   }
 
+  isEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  isUsername(username: string) {
+    return /^[a-zA-Z0-9_]{3,16}$/.test(username);
+  }
+
+  isURL(url: string) {
+    return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+      url
+    );
+  }
+
+  validateUser(dto: CreateUserDto | UpdateUserDto, isCreate: boolean = false) {
+    if (isCreate) {
+      if (!dto.email || !dto.username || !dto.password) {
+        throw new ValidationError("email, username and password are required");
+      }
+    }
+
+    if (dto.email && !this.isEmail(dto.email)) {
+      throw new ValidationError("Email is not valid");
+    }
+
+    if (dto.username && !this.isUsername(dto.username)) {
+      throw new ValidationError("Username must be between 3 and 16 characters");
+    }
+
+    if (dto.password && dto.password.length < 8) {
+      throw new ValidationError("Password must be at least 8 characters");
+    }
+
+    if (dto.firstName && dto.firstName && dto.firstName.length > 20) {
+      throw new ValidationError("First name must be at most 20 characters");
+    }
+
+    if (dto.lastName && dto.lastName && dto.lastName.length > 20) {
+      throw new ValidationError("Last name must be at most 20 characters");
+    }
+
+    if (dto.avatarUrl && dto.avatarUrl && !this.isURL(dto.avatarUrl)) {
+      throw new ValidationError("Avatar URL is not valid");
+    }
+
+    if (dto.description && dto.description && dto.description.length > 100) {
+      throw new ValidationError("Description must be at most 100 characters");
+    }
+  }
+
+  private buildUser(dto: CreateUserDto | UpdateUserDto, user?: IUser): IUser {
+    return {
+      id: user?.id ?? crypto.randomUUID(),
+
+      emailVerified: user?.emailVerified ?? false,
+      createdAt: user?.createdAt ?? new Date(),
+      role: user?.role ?? "user",
+      isActive: user?.isActive ?? true,
+      lastLoginAt: user?.lastLoginAt ?? null,
+
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+
+      firstName: dto.firstName ?? null,
+      lastName: dto.lastName ?? null,
+      avatarUrl: dto.avatarUrl ?? null,
+      description: dto.description ?? null,
+      birthday: dto.birthday ? new Date(dto.birthday) : null,
+      phoneNumber: dto.phoneNumber ?? null,
+    };
+  }
+
   getPage(params: PaginationParams) {
     if (
       params.page === "" ||
@@ -84,49 +157,21 @@ export class UserService {
   }
 
   createUser(dto: CreateUserDto) {
-    if (!dto.email || !dto.username || !dto.password) {
-      throw new ValidationError("email, username and password are required");
-    }
+    this.validateUser(dto, true);
 
     const userExists = this.repo.getUserByEmailOrUsername(
       dto.email,
       dto.username
     );
     if (userExists) {
-      throw new ConflictError("User already exists");
+      throw new ConflictError("Email or username already in use");
     }
 
-    const user: IUser = {
-      id: crypto.randomUUID(),
-
-      email: dto.email,
-      username: dto.username,
-      password: dto.password,
-
-      emailVerified: false,
-      createdAt: new Date(),
-      role: "user",
-      isActive: true,
-      lastLoginAt: null,
-
-      firstName: dto.firstName ?? null,
-      lastName: dto.lastName ?? null,
-      avatarUrl: dto.avatarUrl ?? null,
-      description: dto.description ?? null,
-      birthday: dto.birthday ?? null,
-      phoneNumber: dto.phoneNumber ?? null,
-    };
-
-    return this.repo.createUser(user);
+    return this.repo.createUser(this.buildUser(dto));
   }
 
   updateUser(id: string, dto: UpdateUserDto): IUser {
-    if (!id) {
-      throw new ValidationError("ID is required");
-    }
-    if (!this.isUUID(id)) {
-      throw new ValidationError("ID is not valid UUID");
-    }
+    this.validateUser(dto);
 
     const userExists = this.repo.getUserById(id);
     if (!userExists) {
@@ -142,26 +187,7 @@ export class UserService {
       throw new ConflictError("Email or username already in use");
     }
 
-    const updatedUser: IUser = {
-      id: id,
-
-      emailVerified: userExists.emailVerified,
-      createdAt: userExists.createdAt,
-      role: userExists.role,
-      isActive: userExists.isActive,
-      lastLoginAt: userExists.lastLoginAt,
-
-      email: dto.email,
-      username: dto.username,
-      password: dto.password,
-
-      firstName: dto.firstName ?? null,
-      lastName: dto.lastName ?? null,
-      avatarUrl: dto.avatarUrl ?? null,
-      description: dto.description ?? null,
-      birthday: dto.birthday ?? null,
-      phoneNumber: dto.phoneNumber ?? null,
-    };
+    const updatedUser = this.buildUser(dto, userExists);
 
     return this.repo.updateUser(id, updatedUser);
   }
