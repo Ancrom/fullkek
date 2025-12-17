@@ -1,16 +1,74 @@
 import type { Request, Response } from "express";
 
-import { users } from "../data/users.ts";
+import { userRepository } from "../modules/user.repository";
+import { UserService } from "../services/user.serviсe";
+import { HttpError } from "../errors/HttpError";
+
+const userServiceIns = new UserService(userRepository);
+
+function handleError(res: Response, e: unknown) {
+  if (e instanceof HttpError) {
+    res.status(e.status).json({
+      code: e.code,
+      message: e.message,
+    });
+    return;
+  }
+
+  return res.status(500).json({
+    code: "INTERNAL_ERROR",
+    message: "Internal server error",
+  });
+}
 
 export const getUsers = (req: Request, res: Response) => {
-  res.status(200).json(users);
+  const page = req.query.page as string | undefined;
+  const limit = req.query.limit as string | undefined;
+
+  try {
+    res.status(200).json(userServiceIns.getPage({ page, limit }));
+  } catch (e) {
+    return handleError(res, e);
+  }
 };
 
 export const getUserById = (req: Request, res: Response) => {
-  const userId = req.params.id;
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  const id = req.params.id;
+  try {
+    const user = userServiceIns.getUserById(id);
+    res.status(200).json(user);
+  } catch (e) {
+    return handleError(res, e);
   }
-  res.status(200).json(user);
+};
+
+export const createUser = (req: Request, res: Response) => {
+  const user = req.body;
+  try {
+    const createdUser = userServiceIns.createUser(user);
+    return res.status(201).json(createdUser);
+  } catch (e) {
+    return handleError(res, e);
+  }
+};
+
+export const updateUser = (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = req.body;
+  try {
+    const updatedUser = userServiceIns.updateUser(id, user);
+    return res.status(200).json(updatedUser);
+  } catch (e) {
+    return handleError(res, e);
+  }
+};
+
+export const deleteUser = (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    userServiceIns.deleteUser(id);
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (e) {
+    return handleError(res, e);
+  }
 };

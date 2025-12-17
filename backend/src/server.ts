@@ -1,5 +1,12 @@
 import express from "express";
-import userRoutes from "./routes/user.routes.ts";
+import userRoutes from "./routes/user.routes";
+
+// mock users
+import { seedUsers } from "../tests/users/users.seed";
+import { UserService } from "./services/user.serviсe";
+import { userRepository } from "./modules/user.repository";
+seedUsers(new UserService(userRepository));
+//
 
 const app = express();
 const PORT = 5000;
