@@ -10,12 +10,6 @@ export class UserRepository {
     return this.users.find((user) => user.id === id);
   }
 
-  getUserByEmailOrUsername(email: string, username: string): IUser | undefined {
-    return this.users.find(
-      (user) => user.email === email || user.username === username
-    );
-  }
-
   createUser(user: IUser): IUser {
     this.users.push(user);
     return user;

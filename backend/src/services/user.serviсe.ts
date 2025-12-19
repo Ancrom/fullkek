@@ -169,12 +169,13 @@ export class UserService {
   createUser(dto: CreateUserDto) {
     this.validateUser(dto);
 
-    const userExists = this.repo.getUserByEmailOrUsername(
-      dto.email,
-      dto.username
-    );
-    if (userExists) {
-      throw new ConflictError("Email or username already in use");
+    for (const user of this.repo.getAllUsers()) {
+      if (
+        (dto.email && user.email === dto.email) ||
+        (dto.username && user.username === dto.username)
+      ) {
+        throw new ConflictError("Email or username already in use");
+      }
     }
 
     return this.repo.createUser(this.buildUser(dto));
@@ -183,21 +184,33 @@ export class UserService {
   updateUser(id: string, dto: UpdateUserDto): IUser {
     this.validateUser(dto, false, id);
 
-    const userExists = this.repo.getUserById(id);
-    if (!userExists) {
-      throw new NotFoundError("User not found");
+    let conflictUser: IUser | undefined;
+    let existsUser: IUser | undefined;
+
+    for (const user of this.repo.getAllUsers()) {
+      if (user.id === id) {
+        existsUser = user;
+      }
+      if (
+        (dto.email && user.email === dto.email) ||
+        (dto.username && user.username === dto.username)
+      ) {
+        conflictUser = user;
+      }
+
+      if (existsUser && conflictUser) {
+        break;
+      }
     }
 
-    const conflict = this.repo.getUserByEmailOrUsername(
-      dto.email,
-      dto.username
-    );
-
-    if (conflict && conflict.id !== id) {
+    if (!existsUser) {
+      throw new NotFoundError("User not found");
+    }
+    if (conflictUser) {
       throw new ConflictError("Email or username already in use");
     }
 
-    const updatedUser = this.buildUser(dto, userExists);
+    const updatedUser = this.buildUser(dto, existsUser);
 
     return this.repo.updateUser(id, updatedUser);
   }
