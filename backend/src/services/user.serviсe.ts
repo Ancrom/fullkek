@@ -36,12 +36,19 @@ export class UserService {
     );
   }
 
-  validateUser(dto: CreateUserDto | UpdateUserDto, isCreate: boolean = false) {
+  validateUser(dto: CreateUserDto | UpdateUserDto, isCreate: boolean = false, id?: string) {
     if (isCreate) {
       if (!dto.email || !dto.username || !dto.password) {
         throw new ValidationError("email, username and password are required");
       }
     }
+		if (!isCreate && !id) {
+			throw new ValidationError("ID is required");
+		}
+
+		if (id && !this.isUUID(id)) {
+			throw new ValidationError("ID is not valid UUID");
+		}
 
     if (dto.email && !this.isEmail(dto.email)) {
       throw new ValidationError("Email is not valid");
@@ -171,7 +178,7 @@ export class UserService {
   }
 
   updateUser(id: string, dto: UpdateUserDto): IUser {
-    this.validateUser(dto);
+    this.validateUser(dto, false, id);
 
     const userExists = this.repo.getUserById(id);
     if (!userExists) {
