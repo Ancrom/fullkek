@@ -33,7 +33,7 @@ describe("UserService", () => {
         userService.createUser({
           ...userFields,
         });
-      }).toThrow("User already exists");
+      }).toThrow("Email or username already in use");
     });
     it("should require email, username, and password", () => {
       expect(() => {

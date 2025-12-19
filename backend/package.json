@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
+    "dev": "ts-node-dev --respawn --clear --transpile-only src/server.ts",
+    "test": "jest",
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --clear --transpile-only src/server.ts",
     "lint": "eslint .",
-		"test": "jest",
-		"test:watch": "jest --watch"
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.2",
