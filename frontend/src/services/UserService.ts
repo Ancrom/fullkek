@@ -2,14 +2,14 @@ import type { IUser } from "../types/UserType";
 import { fetchUsers } from "../api/usersApi";
 
 export class UserService {
-  transformDate(date: Date | string) {
+  transformDate(date: string) {
     return new Date(date).toLocaleString("ru-RU", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
   }
-  transformUsers(users: IUser[]) {
+  transformUsers(users: IUser[]): IUser[] {
     return users.map((user) => ({
       ...user,
       createdAt: this.transformDate(user.createdAt),

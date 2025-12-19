@@ -5,17 +5,16 @@ export interface IUser {
   username: string;
 
   emailVerified: boolean;
-  createdAt: Date;
+  createdAt: string;
   role: "user" | "admin" | "moderator";
   isActive: boolean;
-  lastLoginAt: Date | null;
+  lastLoginAt: string | null;
 
   password: string;
   firstName: string | null;
   lastName: string | null;
   avatarUrl: string | null;
   description: string | null;
-  birthday: Date | null;
+  birthday: string | null;
   phoneNumber: string | null;
 }
-

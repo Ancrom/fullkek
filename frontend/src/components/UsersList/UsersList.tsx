@@ -8,8 +8,6 @@ export default function UsersList() {
     queryFn: () => users.fetchUsers(),
   });
 
-  console.log(data);
-
   return (
     <div>
       <button onClick={() => refetch()}>Refetch</button>

@@ -1,0 +1,23 @@
+@host = http://localhost:5000
+@id = 4a49310d-bcad-4c16-bf09-fbcccc4527b6
+
+### get list of users
+GET {{host}}/users?page=1&limit=10
+
+### get user by id
+GET {{host}}/users/{{id}}
+
+### update user
+PUT {{host}}/users/{{id}}
+Content-Type: application/json
+
+{
+  "email": "tes2t@email.com",
+  "username": "updt3",
+  "firstName": "Test",
+	"password": "test2@test.com",
+  "avatarUrl": "https://example.ru",
+  "description": "This is a test user",
+  "birthday": "2000-01-01",
+  "phoneNumber": "123213213"
+}

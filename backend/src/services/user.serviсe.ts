@@ -36,19 +36,22 @@ export class UserService {
     );
   }
 
-  validateUser(dto: CreateUserDto | UpdateUserDto, isCreate: boolean = false, id?: string) {
-    if (isCreate) {
-      if (!dto.email || !dto.username || !dto.password) {
-        throw new ValidationError("email, username and password are required");
-      }
+  validateUser(
+    dto: CreateUserDto | UpdateUserDto,
+    isCreate: boolean = true,
+    id?: string
+  ) {
+    if (!dto.email || !dto.username || !dto.password) {
+      throw new ValidationError("email, username and password are required");
     }
-		if (!isCreate && !id) {
-			throw new ValidationError("ID is required");
-		}
 
-		if (id && !this.isUUID(id)) {
-			throw new ValidationError("ID is not valid UUID");
-		}
+    if (!isCreate && !id) {
+      throw new ValidationError("ID is required");
+    }
+
+    if (id && !this.isUUID(id)) {
+      throw new ValidationError("ID is not valid UUID");
+    }
 
     if (dto.email && !this.isEmail(dto.email)) {
       throw new ValidationError("Email is not valid");
@@ -164,7 +167,7 @@ export class UserService {
   }
 
   createUser(dto: CreateUserDto) {
-    this.validateUser(dto, true);
+    this.validateUser(dto);
 
     const userExists = this.repo.getUserByEmailOrUsername(
       dto.email,
