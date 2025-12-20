@@ -1,0 +1,39 @@
+@host = http://localhost:5000
+@id = e6e11285-df4e-424b-977c-59ead57ef3b6
+
+### get list of users
+GET {{host}}/users?page=1&limit=10
+
+### get user by id
+GET {{host}}/users/{{id}}
+
+### create user
+POST {{host}}/users/
+Content-Type: application/json
+
+{
+	"email": "test525@test.com",
+  "username": "testuser525",
+  "password": "hashedpassword",
+  "firstName": "Test",
+  "lastName": "User",
+  "avatarUrl": "https://example.com/avatar.jpg",
+  "description": "Seed user",
+  "birthday": "2000-01-01",
+  "phoneNumber": "1234567890"
+}
+
+### update user
+PUT {{host}}/users/{{id}}
+Content-Type: application/json
+
+{
+  "email": "tes2t@email.com",
+  "username": "testuser525",
+  "firstName": "Test",
+	"password": "test2@test.com",
+  "avatarUrl": "https://example.ru",
+  "description": "This is a test user",
+  "birthday": "2000-01-01",
+  "phoneNumber": "123213213"
+}
