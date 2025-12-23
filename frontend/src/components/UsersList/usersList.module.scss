@@ -1,0 +1,19 @@
+@use "../../styles/vars" as *;
+@use "../../styles/mixins/formField" as *;
+@use "../../styles/mixins/mixins" as *;
+
+.usersList {
+	@include flex($direction: column, $align: stretch, $gap: 20px);
+}
+
+.title {
+	color: $backgroundSecondary;
+	font-weight: 600;
+	font-size: 36px;
+	text-transform: uppercase;
+	padding: 30px 0 10px;
+}
+
+.input {
+	@include formField($color: $textSecondary);
+}

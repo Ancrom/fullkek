@@ -1,27 +1,24 @@
 import type { IUser } from "../types/UserType";
 import { fetchUsers } from "../api/usersApi";
 
-export class UserService {
-  transformDate(date: string) {
-    return new Date(date).toLocaleString("ru-RU", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  }
-  transformUsers(users: IUser[]): IUser[] {
-    return users.map((user) => ({
-      ...user,
-      createdAt: this.transformDate(user.createdAt),
-      lastLoginAt: user.lastLoginAt
-        ? this.transformDate(user.lastLoginAt)
-        : null,
-      birthday: user.birthday ? this.transformDate(user.birthday) : null,
-    }));
-  }
+function formatDate(date: string): string {
+  return new Date(date).toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
 
-  async fetchUsers() {
-    const response = await fetchUsers();
-    return this.transformUsers(response.data);
-  }
+function transformUser(user: IUser): IUser {
+  return {
+    ...user,
+    createdAt: formatDate(user.createdAt),
+    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : null,
+    birthday: user.birthday ? formatDate(user.birthday) : null,
+  };
+}
+
+export async function fetchUsersService(): Promise<IUser[]> {
+  const response = await fetchUsers();
+  return response.data.map(transformUser);
 }
