@@ -27,7 +27,12 @@ export default function UsersList() {
     setSearch(e.target.value);
   };
 
-  console.log(data);
+  const filteredData = data?.filter((user) => {
+    return (
+      user.email.toLowerCase().includes(search.toLowerCase()) ||
+      user.username.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className={styles.usersList}>
