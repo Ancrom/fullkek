@@ -9,13 +9,19 @@ export default function UsersList() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: () => fetchUsersService(),
+    refetchInterval: 5000,
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
-  console.log(data);
+  const filteredData = data?.filter((user) => {
+    return (
+      user.email.toLowerCase().includes(search.toLowerCase()) ||
+      user.username.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className={styles.usersList}>
@@ -34,12 +40,14 @@ export default function UsersList() {
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error</div>}
       {data && data.length === 0 && <div>No users</div>}
-      {data && (
+      {filteredData && filteredData.length > 0 ? (
         <ul>
-          {data.map((user) => (
+          {filteredData.map((user) => (
             <UserCard user={user} key={user.id} />
           ))}
         </ul>
+      ) : (
+        <div>No users found</div>
       )}
     </div>
   );

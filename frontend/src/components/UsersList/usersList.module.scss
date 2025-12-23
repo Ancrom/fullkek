@@ -4,6 +4,7 @@
 
 .usersList {
 	@include flex($direction: column, $align: stretch, $gap: 20px);
+	color: $textSecondary;
 }
 
 .title {
@@ -16,4 +17,5 @@
 
 .input {
 	@include formField($color: $textSecondary);
+	align-self: flex-start;
 }
