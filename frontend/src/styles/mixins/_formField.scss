@@ -16,6 +16,7 @@
 		font-size: $fontSize;
 		&::placeholder {
 			color: $textPrimary;
+			opacity: 0.4;
 		}
 	}
 }
