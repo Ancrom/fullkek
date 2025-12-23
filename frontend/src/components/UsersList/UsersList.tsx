@@ -23,6 +23,12 @@ export default function UsersList() {
     );
   });
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  console.log(data);
+
   return (
     <div className={styles.usersList}>
       <h1 className={styles.title}>Users list</h1>
