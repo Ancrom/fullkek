@@ -1,0 +1,21 @@
+@use "../../styles/vars" as *;
+@use "../../styles/mixins/mixins" as *;
+
+@mixin formField($color: $textPrimary) {
+	color: $color;
+	font-size: $fontSizeSmall;
+	@include flex($direction: column, $align: flex-start, $gap: 8px);
+
+	span {
+		font-weight: 600;
+	}
+	input {
+		border-radius: $borderRadius;
+		padding: 12px 20px;
+		border: 1px solid $textFourth;
+		font-size: $fontSize;
+		&::placeholder {
+			color: $textPrimary;
+		}
+	}
+}

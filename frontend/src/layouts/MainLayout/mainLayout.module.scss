@@ -1,0 +1,12 @@
+@use "../../styles/vars" as *;
+
+.mainLayout {
+	background-color: $backgroundPrimary;
+	min-height: 100vh;
+}
+
+.container {
+	max-width: $desktop + 30px;
+	margin: 0 auto;
+	padding: 0 15px;
+}
