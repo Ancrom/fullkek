@@ -36,6 +36,12 @@
 	opacity: 0.6;
 	& > :first-child {
 		margin-right: auto;
+		@media (width < $mobile) {
+			width: 100%;
+		}
+	}
+	@media (width < $desktop) {
+		gap: 15px;
 	}
 }
 
