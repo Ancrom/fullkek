@@ -1,8 +1,28 @@
-const BASE_URL = "http://localhost:5000";
+import type { IUser, IUserDto } from "../types/UserType";
+import { api } from "./api";
 
-async function fetchUsers(page: number = 1, limit: number = 10) {
-  const response = await fetch(`${BASE_URL}/users?page=${page}&limit=${limit}`);
-  return response.json();
-}
+export const usersApi = {
+  fetchUsers: async (
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{
+    data: IUser[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> => {
+    return api.get(`/users?page=${page}&limit=${limit}`).then((r) => r.data);
+  },
 
-export { fetchUsers };
+  fetchById: async (id: string): Promise<IUser> =>
+    api.get(`/users/${id}`).then((r) => r.data),
+
+  create: async (dto: IUserDto): Promise<IUser> =>
+    api.post<IUser>("/users", dto).then((r) => r.data),
+
+  update: async (id: string, dto: IUserDto): Promise<IUser> =>
+    api.put<IUser>(`/users/${id}`, dto).then((r) => r.data),
+};

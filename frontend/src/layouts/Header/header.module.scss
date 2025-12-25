@@ -5,6 +5,10 @@
 	@include flex($justify: space-between);
 	padding: 24px 0;
 	background-color: $backgroundPrimary;
+	@media (width < $mobile) {
+		justify-content: center;
+		gap: 20px;
+	}
 }
 
 .logo {

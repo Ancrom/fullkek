@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUsersService } from "../../services/UserService";
+import { fetchUsersService } from "../../../services/UserService";
 import UserCard from "../UserCard/UserCard";
+import Icon from "../../ui/Icons/Icon";
+import "../../../styles/_container.scss";
 import styles from "./usersList.module.scss";
 
 export default function UsersList() {
@@ -36,9 +38,10 @@ export default function UsersList() {
 
   return (
     <div className={styles.usersList}>
-      <h1 className={styles.title}>Users list</h1>
-      <label htmlFor="usersListInput" className={styles.input}>
-        <span>Search user by:</span>
+      <div className={styles.input}>
+        <label htmlFor="usersListInput" className={styles.input}>
+          Search user by:
+        </label>
         <input
           id="usersListInput"
           type="text"
@@ -46,20 +49,21 @@ export default function UsersList() {
           value={search}
           onChange={onChange}
         />
-      </label>
+      </div>
+
       {/* <button onClick={() => refetch()}>Refetch</button> */}
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Icon name="spinner" size={24} />}
       {isError && <div>Error</div>}
       {data && data.length === 0 && <div>No users</div>}
-      {filteredData && filteredData.length > 0 ? (
-        <ul>
+      {filteredData && filteredData.length > 0 && (
+        <ul className={styles.list}>
           {filteredData.map((user) => (
             <UserCard user={user} key={user.id} />
           ))}
         </ul>
-      ) : (
-        <div>No users found</div>
       )}
+      {filteredData && filteredData.length === 0 && <div>No users found</div>}
     </div>
   );
 }
+

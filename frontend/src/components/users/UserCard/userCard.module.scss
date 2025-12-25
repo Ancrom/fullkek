@@ -1,5 +1,5 @@
-@use "./../../styles/vars" as *;
-@use "./../../styles/mixins/mixins" as *;
+@use "../../../styles/vars" as *;
+@use "../../../styles/mixins/mixins" as *;
 
 .userCard {
 	background-color: $backgroundSecondary;
