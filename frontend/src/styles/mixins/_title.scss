@@ -1,0 +1,8 @@
+@use "../../styles/vars" as *;
+
+@mixin title($color: $textPrimary) {
+	font-weight: 600;
+	color: $color;
+	font-size: $fontSizeH1;
+	text-transform: uppercase;
+}

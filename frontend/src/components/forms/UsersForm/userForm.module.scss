@@ -1,0 +1,70 @@
+@use "../../../styles/vars" as *;
+@use "../../../styles/mixins/mixins" as *;
+@use "../../../styles/mixins/formField" as *;
+
+.form {
+	@include flex($direction: column, $align: stretch, $gap: 40px);
+	& > .error {
+		font-size: $fontSizeBig;
+	}
+}
+.body {
+	@include flex($direction: column, $align: flex-start, $gap: 40px);
+	background-color: $backgroundSecondary;
+	padding: 60px;
+	border-radius: $borderRadius;
+
+	@media (width < $mobile) {
+		padding: 15px 10px;
+	}
+}
+.error {
+	color: $danger;
+	font-weight: 600;
+}
+.success {
+	color: $success;
+	font-weight: 600;
+}
+.row {
+	@include flex($direction: row, $align: flex-start, $gap: 40px);
+	@media (width < $desktop) {
+		@include flex($direction: column, $gap: 20px);
+	}
+}
+
+.field {
+	@include formField($color: $textPrimary);
+	.error {
+		color: $danger;
+	}
+}
+.buttons {
+	color: $textThird;
+	align-self: flex-start;
+	display: flex;
+	gap: 20px;
+	& > * {
+		min-width: 211px;
+		font-weight: 800;
+		border-radius: 26px;
+		padding: 16px 83px;
+		cursor: pointer;
+	}
+	.submit {
+		background-color: $backgroundPrimary;
+		color: $textSecondary;
+		&:disabled {
+			cursor: not-allowed;
+		}
+	}
+	.reset {
+		color: $textThird;
+		outline: 2px solid $textThird;
+	}
+
+	@media (width < $mobile) {
+		flex-direction: column;
+		align-self: center;
+	}
+}

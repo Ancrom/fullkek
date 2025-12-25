@@ -192,8 +192,9 @@ export class UserService {
         existsUser = user;
       }
       if (
-        (dto.email && user.email === dto.email) ||
-        (dto.username && user.username === dto.username)
+        user.id !== id &&
+        ((dto.email && user.email === dto.email) ||
+          (dto.username && user.username === dto.username))
       ) {
         conflictUser = user;
       }
