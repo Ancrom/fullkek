@@ -27,7 +27,7 @@ export async function submitUserForm(
   } catch (error) {
     if (
       axios.isAxiosError(error) &&
-      (error.response?.status === 409 || error.response?.status === 400)
+      (error.response?.status === 409 || error.response?.status === 400 || error.response?.status === 404)
     ) {
       helpers.setStatus({
         type: "error",
