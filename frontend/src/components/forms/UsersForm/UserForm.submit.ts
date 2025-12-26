@@ -26,7 +26,10 @@ export async function submitUserForm(
     }
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 409) {
-      helpers.setStatus(error.response.data.message);
+      helpers.setStatus({
+        type: "error",
+        message: error.response.data.message,
+      });
       return;
     }
 
