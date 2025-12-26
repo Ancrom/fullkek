@@ -4,6 +4,7 @@ import type { IUserDto } from "../../../types/UserType";
 import { submitUserForm } from "./UserForm.submit";
 import Icon from "../../ui/Icons/Icon";
 import styles from "./userForm.module.scss";
+import clsx from "clsx";
 
 interface IUsersFormProps {
   initialValues: IUserDto;
@@ -33,12 +34,10 @@ export default function UserForm({ initialValues, id }: IUsersFormProps) {
     >
       {({ isSubmitting, status }) => (
         <Form className={styles.form}>
-          {status?.type === "error" && (
-            <div className={styles.error}>{status.message}</div>
-          )}
-
-          {status?.type === "success" && (
-            <div className={styles.success}>{status.message}</div>
+          {status && (
+            <div className={clsx(styles.status, styles[status.type])}>
+              {status.message}
+            </div>
           )}
 
           <div className={styles.body}>

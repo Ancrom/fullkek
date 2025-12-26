@@ -7,7 +7,7 @@ export async function submitUserForm(
   values: IUserDto,
   helpers: FormikHelpers<IUserDto>,
   id?: string
-) {
+): Promise<void> {
   try {
     helpers.setStatus(null);
     if (!id) {
