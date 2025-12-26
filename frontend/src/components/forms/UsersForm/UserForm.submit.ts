@@ -6,11 +6,11 @@ import type { FormikHelpers } from "formik";
 export async function submitUserForm(
   values: IUserDto,
   helpers: FormikHelpers<IUserDto>,
-  options: { mode: "create" | "update"; id?: string } = { mode: "create" }
+  id?: string
 ) {
   try {
     helpers.setStatus(null);
-    if (options.mode === "create") {
+    if (!id) {
       await usersApi.create(values);
       helpers.resetForm();
       helpers.setStatus({
@@ -18,7 +18,7 @@ export async function submitUserForm(
         message: "User created successfully",
       });
     } else {
-      await usersApi.update(options.id!, values);
+      await usersApi.update(id!, values);
       helpers.setStatus({
         type: "success",
         message: "User updated successfully",

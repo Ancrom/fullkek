@@ -1,25 +1,21 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import type { IUserDto } from "../../../types/UserType";
+import { submitUserForm } from "./UserForm.submit";
 import Icon from "../../ui/Icons/Icon";
 import styles from "./userForm.module.scss";
 
 interface IUsersFormProps {
   initialValues: IUserDto;
-  onSubmit: (
-    values: IUserDto,
-    helpers: any,
-    create?: boolean,
-    id?: string
-  ) => Promise<void>;
+  id?: string;
 }
 
-export default function UserForm({ initialValues, onSubmit }: IUsersFormProps) {
+export default function UserForm({ initialValues, id }: IUsersFormProps) {
   return (
     <Formik
       enableReinitialize={true}
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={(v, h) => submitUserForm(v, h, id)}
       validationSchema={Yup.object({
         email: Yup.string().email("Invalid email").required("Required"),
         username: Yup.string()
