@@ -1,11 +1,10 @@
 import MainLayout from "../../layouts/MainLayout/MainLayout";
 import UsersForm from "../../components/forms/UsersForm/UserForm";
 import type { IUserDto } from "../../types/UserType";
-import { usersApi } from "../../api/usersApi";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { fetchUserByIdService } from "../../services/UserService";
+import { submitUserForm } from "../../components/forms/UsersForm/UserForm.submit";
 import Icon from "../../components/ui/Icons/Icon";
 
 export default function UsersEditPage() {
@@ -22,26 +21,8 @@ export default function UsersEditPage() {
   });
 
   const handleSubmit = async (values: IUserDto, helpers: any) => {
-    try {
-      helpers.setStatus(null);
-      await usersApi.update(id!, values);
-      helpers.setStatus({
-        type: "success",
-        message: "User updated successfully",
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
-        helpers.setStatus(error.response.data.message);
-        return;
-      }
-
-      helpers.setStatus("Unexpected error");
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    submitUserForm(values, helpers, { mode: "update", id });
   };
-
-  console.log(user);
 
   return (
     <MainLayout type="edit">

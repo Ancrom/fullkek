@@ -2,7 +2,7 @@ import type { IUser, IUserDto } from "../types/UserType";
 import { usersApi } from "../api/usersApi";
 
 function formatDate(date: string): string {
-	if (!date) return "";
+  if (!date) return "";
   return new Date(date).toISOString().slice(0, 10);
 }
 

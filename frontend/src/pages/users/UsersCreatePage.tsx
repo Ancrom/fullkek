@@ -1,8 +1,7 @@
 import UsersForm from "../../components/forms/UsersForm/UserForm";
 import MainLayout from "../../layouts/MainLayout/MainLayout";
 import type { IUserDto } from "../../types/UserType";
-import { usersApi } from "../../api/usersApi";
-import axios from "axios";
+import { submitUserForm } from "../../components/forms/UsersForm/UserForm.submit";
 
 const initialValues = {
   email: "",
@@ -18,25 +17,7 @@ const initialValues = {
 
 export default function UsersFormPage() {
   const handleSubmit = async (values: IUserDto, helpers: any) => {
-    try {
-      helpers.setStatus(null);
-      await usersApi.create(values);
-
-      helpers.resetForm();
-      helpers.setStatus({
-        type: "success",
-        message: "User created successfully",
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
-        helpers.setStatus(error.response.data.message);
-        return;
-      }
-
-      helpers.setStatus("Unexpected error");
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    submitUserForm(values, helpers);
   };
 
   return (

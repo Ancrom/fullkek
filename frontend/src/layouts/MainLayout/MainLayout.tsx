@@ -1,7 +1,6 @@
 import styles from "./mainLayout.module.scss";
 import Header from "../Header/Header";
 import clsx from "clsx";
-import "../../styles/_container.scss";
 
 type LayoutType = "default" | "users" | "create" | "edit";
 interface IMainLayoutProps {
