@@ -1,0 +1,66 @@
+@use "./../../styles/vars" as *;
+@use "./../../styles/mixins/mixins" as *;
+
+.userCard {
+	background-color: $backgroundSecondary;
+	padding: 16px 28px;
+	border-radius: $borderRadius;
+}
+
+.top {
+	@include flex($justify: space-between);
+	font-size: $fontSizeSmall;
+	color: $textPrimary;
+	opacity: 0.6;
+	margin: 0 0 20px;
+}
+
+.icon {
+	color: $textThird;
+	@include transition($property: transform);
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
+.title {
+	font-size: $fontSizeH2;
+	font-weight: 600;
+	color: $textPrimary;
+	margin: 0 0 12px;
+}
+
+.bottom {
+	@include flex($justify: flex-start, $gap: 20px, $align: flex-end);
+	color: $textPrimary;
+	opacity: 0.6;
+	& > :first-child {
+		margin-right: auto;
+		@media (width < $mobile) {
+			width: 100%;
+		}
+	}
+	@media (width < $desktop) {
+		gap: 15px;
+	}
+}
+
+.highlight {
+	color: $textThird;
+	font-weight: 600;
+	font-size: $fontSizeBig;
+}
+
+.active,
+.inactive {
+	font-size: $fontSizeSmall;
+	font-weight: 600;
+}
+
+.active {
+	color: $success;
+}
+
+.inactive {
+	color: $danger;
+}

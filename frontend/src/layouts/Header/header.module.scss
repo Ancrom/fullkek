@@ -1,0 +1,28 @@
+@use "../../styles/vars" as *;
+@use "../../styles/mixins/mixins" as *;
+
+.nav {
+	@include flex($justify: space-between);
+	padding: 24px 0;
+	background-color: $backgroundPrimary;
+}
+
+.logo {
+	font-size: 60px;
+	font-weight: 900;
+	text-transform: uppercase;
+	cursor: default;
+	color: $textSecondary;
+}
+
+.menu {
+	@include flex();
+	color: $textSecondary;
+}
+.item {
+	padding: 20px;
+	&:hover {
+		color: $textFourth;
+		@include transition($property: color);
+	}
+}
