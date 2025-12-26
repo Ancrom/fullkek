@@ -383,7 +383,7 @@ Content-Type: application/json
 Примеры некорректного запроса:
 
 ```
-POST /users
+PUT /users
 Content-Type: application/json
 
 {
@@ -480,3 +480,4 @@ DELETE /users/123
 | POST   | /users      | ❌ Нет          |
 | PUT    | /users/{id} | ✅ Да           |
 | DELETE | /users/{id} | ✅ Да           |
+
