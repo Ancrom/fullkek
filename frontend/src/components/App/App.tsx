@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./app.scss";
+import "../../styles/_container.scss";
 import UsersPage from "../../pages/users/UsersListPage";
 import UsersCreatePage from "../../pages/users/UsersCreatePage";
 import UsersEditPage from "../../pages/users/UsersEditPage";

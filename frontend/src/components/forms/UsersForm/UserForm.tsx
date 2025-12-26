@@ -6,7 +6,12 @@ import styles from "./userForm.module.scss";
 
 interface IUsersFormProps {
   initialValues: IUserDto;
-  onSubmit: (values: IUserDto, helpers: any) => Promise<void>;
+  onSubmit: (
+    values: IUserDto,
+    helpers: any,
+    create?: boolean,
+    id?: string
+  ) => Promise<void>;
 }
 
 export default function UserForm({ initialValues, onSubmit }: IUsersFormProps) {
@@ -39,6 +44,7 @@ export default function UserForm({ initialValues, onSubmit }: IUsersFormProps) {
           {status?.type === "success" && (
             <div className={styles.success}>{status.message}</div>
           )}
+
           <div className={styles.body}>
             <div className={styles.row}>
               <div className={styles.field}>

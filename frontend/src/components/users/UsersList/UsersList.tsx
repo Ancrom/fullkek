@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsersService } from "../../../services/UserService";
+import type { IUser } from "../../../types/UserType";
 import UserCard from "../UserCard/UserCard";
 import Icon from "../../ui/Icons/Icon";
-import "../../../styles/_container.scss";
 import styles from "./usersList.module.scss";
 
 export default function UsersList() {
@@ -25,6 +25,16 @@ export default function UsersList() {
     );
   });
 
+  const renderUsers = (users: IUser[]) => {
+    return (
+      <ul className={styles.list}>
+        {users?.map((user) => (
+          <UserCard user={user} key={user.id} />
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <div className={styles.usersList}>
       <div className={styles.input}>
@@ -44,15 +54,8 @@ export default function UsersList() {
       {isLoading && <Icon name="spinner" size={24} />}
       {isError && <div>Error</div>}
       {data && data.length === 0 && <div>No users</div>}
-      {filteredData && filteredData.length > 0 && (
-        <ul className={styles.list}>
-          {filteredData.map((user) => (
-            <UserCard user={user} key={user.id} />
-          ))}
-        </ul>
-      )}
+      {filteredData && filteredData.length > 0 && renderUsers(filteredData)}
       {filteredData && filteredData.length === 0 && <div>No users found</div>}
     </div>
   );
 }
-
