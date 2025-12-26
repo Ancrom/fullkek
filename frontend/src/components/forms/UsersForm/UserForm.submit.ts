@@ -25,7 +25,10 @@ export async function submitUserForm(
       });
     }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 409) {
+    if (
+      axios.isAxiosError(error) &&
+      (error.response?.status === 409 || error.response?.status === 400)
+    ) {
       helpers.setStatus({
         type: "error",
         message: error.response.data.message,
