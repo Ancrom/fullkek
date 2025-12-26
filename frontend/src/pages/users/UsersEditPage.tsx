@@ -1,10 +1,9 @@
 import MainLayout from "../../layouts/MainLayout/MainLayout";
 import UsersForm from "../../components/forms/UsersForm/UserForm";
-import type { IUserDto } from "../../types/UserType";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { fetchUserByIdService } from "../../services/UserService";
-import { submitUserForm } from "../../components/forms/UsersForm/UserForm.submit";
+
 import Icon from "../../components/ui/Icons/Icon";
 
 export default function UsersEditPage() {
@@ -20,15 +19,11 @@ export default function UsersEditPage() {
     queryFn: () => fetchUserByIdService(id!),
   });
 
-  const handleSubmit = async (values: IUserDto, helpers: any) => {
-    submitUserForm(values, helpers, { mode: "update", id });
-  };
-
   return (
     <MainLayout type="edit">
       {isLoading && <Icon name="spinner" size={24} />}
       {isError && <div>{error.message}</div>}
-      {user && <UsersForm initialValues={user} onSubmit={handleSubmit} />}
+      {user && <UsersForm initialValues={user} id={id} />}
     </MainLayout>
   );
 }

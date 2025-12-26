@@ -10,8 +10,8 @@ function transformUser(user: IUser): IUser {
   return {
     ...user,
     createdAt: formatDate(user.createdAt),
-    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : null,
-    birthday: user.birthday ? formatDate(user.birthday) : null,
+    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : "",
+    birthday: user.birthday ? formatDate(user.birthday) : "",
   };
 }
 
