@@ -1,24 +1,34 @@
-import type { IUser } from "../types/UserType";
-import { fetchUsers } from "../api/usersApi";
+import type { IUser, IUserDto } from "../types/UserType";
+import { usersApi } from "../api/usersApi";
 
 function formatDate(date: string): string {
-  return new Date(date).toLocaleString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  if (!date) return "";
+  return new Date(date).toISOString().slice(0, 10);
 }
 
 function transformUser(user: IUser): IUser {
   return {
     ...user,
     createdAt: formatDate(user.createdAt),
-    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : null,
-    birthday: user.birthday ? formatDate(user.birthday) : null,
+    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : "",
+    birthday: user.birthday ? formatDate(user.birthday) : "",
   };
 }
 
-export async function fetchUsersService(): Promise<IUser[]> {
-  const response = await fetchUsers();
+export async function fetchUsersService(
+  page: number = 1,
+  limit: number = 10
+): Promise<IUser[]> {
+  const response: { data: IUser[] } = await usersApi.fetchUsers(page, limit);
   return response.data.map(transformUser);
+}
+
+export async function fetchUserByIdService(id: string): Promise<IUser> {
+  const response = await usersApi.fetchById(id);
+  return transformUser(response);
+}
+
+export async function createUserService(dto: IUserDto): Promise<IUser> {
+  const response = await usersApi.create(dto);
+  return transformUser(response);
 }

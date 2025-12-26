@@ -1,12 +1,29 @@
 @use "../../styles/vars" as *;
+@use "../../styles/mixins/mixins" as *;
+@use "../../styles/mixins/title" as *;
 
 .mainLayout {
 	background-color: $backgroundPrimary;
 	min-height: 100vh;
 }
 
-.container {
-	max-width: $desktop + 30px;
-	margin: 0 auto;
-	padding: 0 15px;
+.main {
+	@include flex($direction: column, $align: stretch, $gap: 40px);
+	padding: 40px 15px;
+}
+
+.users {
+	.title {
+		@include title($color: $textSecondary);
+	}
+}
+
+.create,
+.edit {
+	.title {
+		@include title($color: $textThird);
+	}
+	.main {
+		background-color: $backgroundThird;
+	}
 }

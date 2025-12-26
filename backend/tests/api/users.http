@@ -1,5 +1,5 @@
 @host = http://localhost:5000
-@id = e6e11285-df4e-424b-977c-59ead57ef3b6
+@id = 63955a53-b322-4e5f-b395-fb4b93238667
 
 ### get list of users
 GET {{host}}/users?page=1&limit=10

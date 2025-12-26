@@ -1,0 +1,23 @@
+@use "../../../styles/vars" as *;
+@use "../../../styles/mixins/formField" as *;
+@use "../../../styles/mixins/mixins" as *;
+
+.usersList {
+	@include flex($direction: column, $align: stretch, $gap: 40px);
+	color: $textSecondary;
+	@media (width < $desktop) {
+		gap: 20px;
+	}
+}
+
+.input {
+	@include formField($color: $textSecondary, $fontWeight: 600);
+	align-self: flex-start;
+}
+
+.list {
+	@include flex($direction: column, $align: stretch, $gap: 40px);
+	@media (width < $desktop) {
+		gap: 20px;
+	}
+}
