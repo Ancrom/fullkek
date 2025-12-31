@@ -19,6 +19,9 @@ export default function UsersEditPage() {
     queryFn: () => fetchUserByIdService(id!),
   });
 
+	console.log(user);
+	
+
   return (
     <MainLayout type="edit">
       {isLoading && <Icon name="spinner" size={24} />}

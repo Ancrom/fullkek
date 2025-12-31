@@ -19,20 +19,7 @@ export interface IUser {
   phoneNumber: string | null;
 }
 
-export type CreateUserDto = {
-  email: string;
-  username: string;
-  password: string;
-	
-  firstName: string;
-  lastName: string;
-  avatarUrl: string;
-  description: string;
-  birthday: Date;
-  phoneNumber: string;
-};
-
-export type UpdateUserDto = {
+export interface IPostUserDto {
   email: string;
   username: string;
   password: string;
@@ -41,6 +28,6 @@ export type UpdateUserDto = {
   lastName: string | null;
   avatarUrl: string | null;
   description: string | null;
-  birthday: Date | null;
+  birthday: string | null;
   phoneNumber: string | null;
-};
+}

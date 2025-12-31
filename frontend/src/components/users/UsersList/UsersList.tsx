@@ -8,7 +8,7 @@ import styles from "./usersList.module.scss";
 
 export default function UsersList() {
   const [search, setSearch] = useState("");
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["users"],
     queryFn: () => fetchUsersService(),
     refetchInterval: 5000,

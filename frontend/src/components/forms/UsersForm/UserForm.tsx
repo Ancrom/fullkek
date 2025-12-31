@@ -26,8 +26,8 @@ export default function UserForm({ initialValues, id }: IUsersFormProps) {
         password: Yup.string().min(8, "Min 8 characters").required("Required"),
         firstName: Yup.string().max(20, "Max 20 characters"),
         lastName: Yup.string().max(20, "Max 20 characters"),
-        avatarUrl: Yup.string().url("Invalid URL"),
-        description: Yup.string().max(100, "Max 100 characters"),
+        avatarUrl: Yup.string().url("Invalid URL").nullable(),
+        description: Yup.string().max(100, "Max 100 characters").nullable(),
         birthday: Yup.date().nullable(),
         phoneNumber: Yup.string().max(20, "Max 20 characters"),
       })}
