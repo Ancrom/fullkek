@@ -80,11 +80,7 @@ erDiagram
 
 ## **Переменные окружения**
 
-### Настройка .env файлов
-
-Проект использует разные `.env` файлы для Docker Compose и локальной разработки:
-
-#### Для Docker Compose
+### Настройка переменных окружения
 
 Создайте файл `infra/.env` с переменными для Docker Compose:
 
@@ -105,42 +101,13 @@ DB_PASSWORD=fullkek_password
 
 **Важно:** `DB_HOST=db` указывает на имя сервиса в Docker сети.
 
-#### Для локальной разработки (без Docker)
-
-Создайте файлы `.env` для backend и frontend:
-
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-```
-
-Содержимое `backend/.env` для локальной разработки:
-
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=fullkek_db
-DB_USER=fullkek_user
-DB_PASSWORD=fullkek_password
-```
-
-**Важно:** Для локальной разработки используйте `DB_HOST=localhost` (а не `db`).
-
-### Структура переменных окружения
-
-- **`infra/.env`** - используется Docker Compose для подстановки переменных в `docker-compose.yml`
-- **`backend/.env`** - используется при локальном запуске backend (`npm run dev`)
-- **`frontend/.env`** - используется при локальном запуске frontend (`npm run dev`)
-
 ## **Установка и запуск**
 
 ### Предварительные требования
 
-- Node.js 16+
-- npm или yarn
-- Docker и Docker Compose (для запуска через Docker)
+- Docker и Docker Compose
 
-### Запуск через Docker Compose
+### Запуск проекта
 
 #### 1. Настройка переменных окружения
 
@@ -154,9 +121,17 @@ docker-compose up -d
 ```
 
 Сервисы будут доступны:
-- Backend: `http://localhost:3000`
-- Frontend: `http://localhost:80`
-- PostgreSQL: `localhost:5432`
+- **Frontend** (через Nginx): `http://localhost:80`
+- **Backend API** (через Nginx): `http://localhost:80/api/`
+- **Backend** (напрямую): `http://localhost:3000`
+- **PostgreSQL**: `localhost:5432`
+
+#### 3. Hot-reload и разработка
+
+Проект настроен для разработки с hot-reload:
+- **Backend**: изменения в файлах `backend/` автоматически перезагружают сервер
+- **Frontend**: изменения в файлах `frontend/` автоматически обновляют страницу в браузере
+- Код монтируется через volumes, поэтому изменения применяются мгновенно
 
 **Примечание:** Docker Compose автоматически использует переменные из `infra/.env` для настройки всех сервисов. Переменные передаются в контейнеры через секцию `environment:` в `docker-compose.yml`.
 
@@ -212,20 +187,38 @@ docker-compose up -d
 
 ## **Разработка**
 
+Все команды разработки выполняются внутри Docker контейнеров.
+
 ### Линтинг
 
 Для проверки качества кода в backend:
 
 ```bash
-cd backend
-npm run lint
+docker exec backend npm run lint
 ```
 
 ### Тестирование
 
 ```bash
-cd backend
-npm test
+docker exec backend npm test
+```
+
+### Просмотр логов
+
+Для просмотра логов всех сервисов:
+
+```bash
+cd infra
+docker-compose logs -f
+```
+
+Для просмотра логов конкретного сервиса:
+
+```bash
+cd infra
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f nginx
 ```
 
 ## **Changelog**
