@@ -69,7 +69,7 @@ erDiagram
 - `isActive` - статус активности
 - `lastLoginAt` - дата и время последней авторизации
 
-**Изменяемые поля:**
+**Mutable поля:**
 - `password` - хэш пароля (минимум 8 символов)
 - `firstName` - имя (до 20 символов)
 - `lastName` - фамилия (до 20 символов)
@@ -219,20 +219,6 @@ docker-compose up -d
 ```bash
 cd backend
 npm run lint
-```
-
-### Сборка
-
-Backend:
-```bash
-cd backend
-npm run build
-```
-
-Frontend:
-```bash
-cd frontend
-npm run build
 ```
 
 ### Тестирование
