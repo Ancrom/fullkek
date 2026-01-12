@@ -55,32 +55,32 @@ export class UserRepository {
     return rows[0];
   }
 
-  async updateUser(id: string, data: IUser): Promise<IUser> {
-		const { rows } = await pool.query(
-			`UPDATE users SET email = $1, username = $2, "firstName" = $3, "lastName" = $4, "avatarUrl" = $5, description = $6, birthday = $7, "phoneNumber" = $8, role = $9, "isActive" = $10, "emailVerified" = $11, "lastLoginAt" = $12, "createdAt" = $13
+  async updateUser(id: string, user: IUser): Promise<IUser> {
+    const { rows } = await pool.query(
+      `UPDATE users SET email = $1, username = $2, "firstName" = $3, "lastName" = $4, "avatarUrl" = $5, description = $6, birthday = $7, "phoneNumber" = $8, role = $9, "isActive" = $10, "emailVerified" = $11, "lastLoginAt" = $12, "createdAt" = $13
 			WHERE id = $14 RETURNING *`,
-			[
-				data.email,
-				data.username,
-				data.firstName,
-				data.lastName,
-				data.avatarUrl,
-				data.description,
-				data.birthday,
-				data.phoneNumber,
-				data.role,
-				data.isActive,
-				data.emailVerified,
-				data.lastLoginAt,
-				data.createdAt,
-				id
-			]
-		)
+      [
+        user.email,
+        user.username,
+        user.firstName,
+        user.lastName,
+        user.avatarUrl,
+        user.description,
+        user.birthday,
+        user.phoneNumber,
+        user.role,
+        user.isActive,
+        user.emailVerified,
+        user.lastLoginAt,
+        user.createdAt,
+        id,
+      ]
+    );
     return rows[0];
   }
 
   async deleteUser(id: string): Promise<void> {
-		await pool.query("DELETE FROM users WHERE id = $1", [id]);
+    await pool.query("DELETE FROM users WHERE id = $1", [id]);
   }
 }
 

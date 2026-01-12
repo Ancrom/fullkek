@@ -6,12 +6,12 @@ import Icon from "../../ui/Icons/Icon";
 import styles from "./userForm.module.scss";
 import clsx from "clsx";
 
-interface IUsersFormProps {
+interface IUserFormProps {
   initialValues: IUserDto;
   id?: string;
 }
 
-export default function UserForm({ initialValues, id }: IUsersFormProps) {
+export default function UserForm({ initialValues, id }: IUserFormProps) {
   return (
     <Formik
       enableReinitialize={true}

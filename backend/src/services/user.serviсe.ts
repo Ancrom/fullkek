@@ -92,7 +92,7 @@ export class UserService {
       params.limit === undefined
     ) {
       throw new errors.ValidationError(
-        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+        "Page and limit must be integers. Page >= 1, 1 <= limit <= 100"
       );
     }
 
