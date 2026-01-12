@@ -82,26 +82,55 @@ erDiagram
 
 ### Настройка .env файлов
 
-Скопируйте файлы `.env.example` в `.env` для backend и frontend:
+Проект использует разные `.env` файлы для Docker Compose и локальной разработки:
+
+#### Для Docker Compose
+
+Создайте файл `infra/.env` с переменными для Docker Compose:
+
+```bash
+cd infra
+cp .env.example .env
+```
+
+Содержимое `infra/.env`:
+
+```env
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=fullkek_db
+DB_USER=fullkek_user
+DB_PASSWORD=fullkek_password
+```
+
+**Важно:** `DB_HOST=db` указывает на имя сервиса в Docker сети.
+
+#### Для локальной разработки (без Docker)
+
+Создайте файлы `.env` для backend и frontend:
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-После копирования отредактируйте файлы `.env` и укажите необходимые значения переменных окружения.
+Содержимое `backend/.env` для локальной разработки:
 
-### Docker Compose (infra/docker-compose.yml)
-
-Переменные окружения для PostgreSQL контейнера:
-
-```yaml
-POSTGRES_DB=fullkek_db
-POSTGRES_USER=fullkek_user
-POSTGRES_PASSWORD=fullkek_password
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=fullkek_db
+DB_USER=fullkek_user
+DB_PASSWORD=fullkek_password
 ```
 
-**Примечание:** При использовании Docker Compose переменные базы данных должны совпадать с настройками в `backend/.env`.
+**Важно:** Для локальной разработки используйте `DB_HOST=localhost` (а не `db`).
+
+### Структура переменных окружения
+
+- **`infra/.env`** - используется Docker Compose для подстановки переменных в `docker-compose.yml`
+- **`backend/.env`** - используется при локальном запуске backend (`npm run dev`)
+- **`frontend/.env`** - используется при локальном запуске frontend (`npm run dev`)
 
 ## **Установка и запуск**
 
@@ -153,6 +182,12 @@ Frontend будет доступен на `http://localhost:5173`
 
 ### Запуск через Docker Compose
 
+#### 1. Настройка переменных окружения
+
+Убедитесь, что файл `infra/.env` создан и содержит необходимые переменные (см. раздел "Переменные окружения").
+
+#### 2. Запуск сервисов
+
 ```bash
 cd infra
 docker-compose up -d
@@ -162,6 +197,8 @@ docker-compose up -d
 - Backend: `http://localhost:3000`
 - Frontend: `http://localhost:5173`
 - PostgreSQL: `localhost:5432`
+
+**Примечание:** Docker Compose автоматически использует переменные из `infra/.env` для настройки всех сервисов. Переменные передаются в контейнеры через секцию `environment:` в `docker-compose.yml`.
 
 ## **API Эндпоинты**
 
