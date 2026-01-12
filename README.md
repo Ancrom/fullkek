@@ -29,7 +29,7 @@ fullkek/
 ### Инфраструктура
 - **Docker** & **Docker Compose**
 - **PostgreSQL** 16
-- **Nginx** (для frontend)
+- **Nginx** (reverse proxy для frontend и backend API)
 
 ## **ERD-схема базы данных**
 
@@ -155,14 +155,14 @@ docker-compose up -d
 
 Сервисы будут доступны:
 - Backend: `http://localhost:3000`
-- Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:80`
 - PostgreSQL: `localhost:5432`
 
 **Примечание:** Docker Compose автоматически использует переменные из `infra/.env` для настройки всех сервисов. Переменные передаются в контейнеры через секцию `environment:` в `docker-compose.yml`.
 
 ## **API Эндпоинты**
 
-Базовый URL: `http://localhost:3000/api`
+Базовый URL (через Nginx): `http://localhost:80/api/`
 
 ### Health Check
 
@@ -237,3 +237,4 @@ npm test
 - Интеграция с PostgreSQL
 - Docker Compose конфигурация
 - React frontend с TypeScript
+- Nginx reverse proxy для frontend и backend API
