@@ -27,8 +27,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: backend
     env_file:
-      - ./.env.example
-      - ./.env
+      - ../backend/.env.example
+      - ../backend/.env
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -51,8 +51,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: frontend
     env_file:
-      - ./.env.example
-      - ./.env
+      - ../frontend/.env.example
+      - ../frontend/.env
     depends_on:
       - backend
     ports:

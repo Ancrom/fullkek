@@ -109,8 +109,7 @@ DB_PASSWORD=fullkek_password
 #### 2. Запуск сервисов
 
 ```bash
-cd infra
-docker-compose up -d
+npm run dev
 ```
 
 Сервисы будут доступны:
