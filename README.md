@@ -36,47 +36,24 @@ fullkek/
 ```mermaid
 erDiagram
     users {
-        UUID id PK "PRIMARY KEY, DEFAULT gen_random_uuid()"
-        TEXT username UK "UNIQUE, NOT NULL, CHECK (3-16 символов)"
-        TEXT email UK "UNIQUE, NOT NULL, CHECK (валидный email)"
-        TEXT password "NOT NULL, CHECK (>= 8 символов)"
-        TEXT firstName "CHECK (<= 20 символов)"
-        TEXT lastName "CHECK (<= 20 символов)"
-        TEXT avatarUrl "CHECK (валидный URL)"
-        TEXT description "CHECK (<= 100 символов)"
-        DATE birthday "CHECK (<= CURRENT_DATE)"
-        TEXT phoneNumber "CHECK (<= 20 символов)"
-        TEXT role "DEFAULT 'user', CHECK (user|admin|moderator)"
-        BOOLEAN isActive "DEFAULT TRUE"
-        BOOLEAN emailVerified "DEFAULT FALSE"
+        UUID id PK
+        TEXT username UK
+        TEXT email UK
+        TEXT password
+        TEXT firstName
+        TEXT lastName
+        TEXT avatarUrl
+        TEXT description
+        DATE birthday
+        TEXT phoneNumber
+        TEXT role
+        BOOLEAN isActive
+        BOOLEAN emailVerified
         TIMESTAMP lastLoginAt
-        TIMESTAMP createdAt "DEFAULT CURRENT_TIMESTAMP"
-        TIMESTAMP updatedAt "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP createdAt
+        TIMESTAMP updatedAt
     }
 ```
-
-### Описание сущности Users
-
-**Уникальные поля:**
-- `id` - UUID идентификатор пользователя
-- `email` - адрес электронной почты (уникальный)
-- `username` - имя пользователя (уникальное, 3-16 символов)
-
-**Read-only поля:**
-- `emailVerified` - подтверждён ли email
-- `createdAt` - дата и время создания
-- `role` - роль пользователя (user, admin, moderator)
-- `isActive` - статус активности
-- `lastLoginAt` - дата и время последней авторизации
-
-**Mutable поля:**
-- `password` - хэш пароля (минимум 8 символов)
-- `firstName` - имя (до 20 символов)
-- `lastName` - фамилия (до 20 символов)
-- `avatarUrl` - ссылка на аватар (валидный URL)
-- `description` - описание (до 100 символов)
-- `birthday` - день рождения
-- `phoneNumber` - номер телефона (до 20 символов)
 
 ## **Переменные окружения**
 
