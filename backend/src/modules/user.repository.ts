@@ -15,7 +15,7 @@ export class UserRepository {
   }
 
   async getUserByEmail(email: string): Promise<IUser> {
-    const { rows } = await pool.query("SELECT * FROM users WHERE email = $1", [
+    const { rows } = await pool.query("SELECT * FROM users WHERE LOWER(email) = $1", [
       email,
     ]);
     return rows[0];
@@ -23,7 +23,7 @@ export class UserRepository {
 
   async getUserByUsername(username: string): Promise<IUser> {
     const { rows } = await pool.query(
-      "SELECT * FROM users WHERE username = $1",
+      "SELECT * FROM users WHERE LOWER(username) = $1",
       [username]
     );
     return rows[0];
