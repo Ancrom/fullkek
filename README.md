@@ -40,18 +40,18 @@ erDiagram
         TEXT username UK
         TEXT email UK
         TEXT password
-        TEXT firstName
-        TEXT lastName
-        TEXT avatarUrl
+        TEXT first_name
+        TEXT last_name
+        TEXT avatar_url
         TEXT description
         DATE birthday
-        TEXT phoneNumber
+        TEXT phone
         TEXT role
-        BOOLEAN isActive
-        BOOLEAN emailVerified
-        TIMESTAMP lastLoginAt
-        TIMESTAMP createdAt
-        TIMESTAMP updatedAt
+        BOOLEAN is_active
+        BOOLEAN email_confirmed
+        TIMESTAMP last_login_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 ```
 
