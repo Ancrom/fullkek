@@ -1,4 +1,5 @@
 import type { IUser, IPostUserDto } from "../types/user.types";
+import { DatabaseError } from "pg";
 import { UserRepository } from "../modules/user.repository";
 import { errors } from "../errors/HttpError";
 import { validators } from "../utils/validators/validators";
@@ -38,17 +39,17 @@ export class UserService {
         "Password must be at least 8 characters"
       );
     }
-    if (dto.firstName && dto.firstName && dto.firstName.length > 20) {
+    if (dto.first_name && dto.first_name && dto.first_name.length > 20) {
       throw new errors.ValidationError(
         "First name must be at most 20 characters"
       );
     }
-    if (dto.lastName && dto.lastName && dto.lastName.length > 20) {
+    if (dto.last_name && dto.last_name && dto.last_name.length > 20) {
       throw new errors.ValidationError(
         "Last name must be at most 20 characters"
       );
     }
-    if (dto.avatarUrl && dto.avatarUrl && !validators.isURL(dto.avatarUrl)) {
+    if (dto.avatar_url && dto.avatar_url && !validators.isURL(dto.avatar_url)) {
       throw new errors.ValidationError("Avatar URL is not valid");
     }
     if (dto.description && dto.description && dto.description.length > 100) {
@@ -62,23 +63,39 @@ export class UserService {
     return {
       id: user?.id ?? crypto.randomUUID(),
 
-      emailVerified: user?.emailVerified ?? false,
-      createdAt: user?.createdAt ?? new Date(),
+      email_confirmed: user?.email_confirmed ?? false,
+      created_at: user?.created_at ?? new Date(),
       role: user?.role ?? "user",
-      isActive: user?.isActive ?? true,
-      lastLoginAt: user?.lastLoginAt ?? null,
+			is_active: user?.is_active ?? true,
+			last_login_at: user?.last_login_at ?? null,
 
       email: dto.email,
       username: dto.username,
       password: dto.password,
 
-      firstName: normalizeString(dto.firstName),
-      lastName: normalizeString(dto.lastName),
-      avatarUrl: normalizeString(dto.avatarUrl),
+      first_name: normalizeString(dto.first_name),
+      last_name: normalizeString(dto.last_name),
+      avatar_url: normalizeString(dto.avatar_url),
       description: normalizeString(dto.description),
       birthday: dto.birthday ? new Date(dto.birthday) : null,
-      phoneNumber: normalizeString(dto.phoneNumber),
+      phone: normalizeString(dto.phone),
     };
+  }
+
+  private handleConflict(e: DatabaseError) {
+    if (e.code === "23505") {
+      if (e.constraint === "users_email_key") {
+        throw new errors.ConflictError("Email already in use");
+      }
+
+      if (e.constraint === "users_username_key") {
+        throw new errors.ConflictError("Username already in use");
+      }
+
+      throw new errors.ConflictError("User already exists");
+    }
+
+    throw e;
   }
 
   async getPage(params: {
@@ -147,38 +164,24 @@ export class UserService {
 
   async createUser(dto: IPostUserDto) {
     this.validateUser(dto);
-
-    const emailConflict = await this.repo.getUserByEmail(dto.email);
-    if (emailConflict) {
-      throw new errors.ConflictError("Email already in use");
+    try {
+      return await this.repo.createUser(this.buildUser(dto));
+    } catch (e: unknown) {
+      this.handleConflict(e as DatabaseError);
     }
-    const usernameConflict = await this.repo.getUserByUsername(dto.username);
-    if (usernameConflict) {
-      throw new errors.ConflictError("Username already in use");
-    }
-
-    return await this.repo.createUser(this.buildUser(dto));
   }
 
-  async updateUser(id: string, dto: IPostUserDto): Promise<IUser> {
+  async updateUser(id: string, dto: IPostUserDto) {
     this.validateUser(dto, id, "update");
-
-    const existsUser = await this.repo.getUserById(id);
-    if (!existsUser) {
-      throw new errors.NotFoundError("User not found");
+    try {
+      const user = await this.repo.updateUser(id, this.buildUser(dto));
+      if (!user) {
+        throw new errors.NotFoundError("User not found");
+      }
+      return user;
+    } catch (e: unknown) {
+      this.handleConflict(e as DatabaseError);
     }
-    const emailConflict = await this.repo.getUserByEmail(dto.email);
-    if (emailConflict && emailConflict.id !== id) {
-      throw new errors.ConflictError("Email already in use");
-    }
-    const usernameConflict = await this.repo.getUserByUsername(dto.username);
-    if (usernameConflict && usernameConflict.id !== id) {
-      throw new errors.ConflictError("Username already in use");
-    }
-
-    const updatedUser = this.buildUser(dto, existsUser);
-
-    return await this.repo.updateUser(id, updatedUser);
   }
 
   async deleteUser(id: string) {

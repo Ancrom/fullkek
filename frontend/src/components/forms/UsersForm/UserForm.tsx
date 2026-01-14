@@ -24,12 +24,12 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
           .max(16, "Max 16 characters")
           .required("Required"),
         password: Yup.string().min(8, "Min 8 characters").required("Required"),
-        firstName: Yup.string().max(20, "Max 20 characters"),
-        lastName: Yup.string().max(20, "Max 20 characters"),
-        avatarUrl: Yup.string().url("Invalid URL").nullable(),
-        description: Yup.string().max(100, "Max 100 characters").nullable(),
-        birthday: Yup.date().nullable(),
-        phoneNumber: Yup.string().max(20, "Max 20 characters"),
+        first_name: Yup.string().max(20, "Max 20 characters"),
+        last_name: Yup.string().max(20, "Max 20 characters"),
+        avatar_url: Yup.string().url("Invalid URL"),
+        description: Yup.string().max(100, "Max 100 characters"),
+        birthday: Yup.date(),
+        phone: Yup.string().max(20, "Max 20 characters"),
       })}
     >
       {({ isSubmitting, status }) => (
@@ -94,43 +94,43 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label htmlFor="firstName">firstname</label>
+                <label htmlFor="first_name">first_name</label>
                 <Field
-                  id="firstName"
-                  name="firstName"
+                  id="first_name"
+                  name="first_name"
                   type="text"
                   placeholder="Alexander"
                 />
                 <ErrorMessage
-                  name="firstName"
+                  name="first_name"
                   component="div"
                   className={styles.error}
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="lastName">Lastname</label>
+                <label htmlFor="last_name">last_name</label>
                 <Field
-                  id="lastName"
-                  name="lastName"
+                  id="last_name"
+                  name="last_name"
                   type="text"
                   placeholder="Pushkin"
                 />
                 <ErrorMessage
-                  name="lastName"
+                  name="last_name"
                   component="div"
                   className={styles.error}
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="avatarUrl">Avatar URL</label>
+                <label htmlFor="avatar_url">Avatar URL</label>
                 <Field
-                  id="avatarUrl"
-                  name="avatarUrl"
+                  id="avatar_url"
+                  name="avatar_url"
                   type="text"
                   placeholder="www.example.com"
                 />
                 <ErrorMessage
-                  name="avatarUrl"
+                  name="avatar_url"
                   component="div"
                   className={styles.error}
                 />
@@ -153,15 +153,15 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="phoneNumber">Phone number</label>
+                <label htmlFor="phone">Phone number</label>
                 <Field
-                  id="phoneNumber"
-                  name="phoneNumber"
+                  id="phone"
+                  name="phone"
                   type="text"
                   placeholder="+0-999-888-77-66"
                 />
                 <ErrorMessage
-                  name="phoneNumber"
+                  name="phone"
                   component="div"
                   className={styles.error}
                 />

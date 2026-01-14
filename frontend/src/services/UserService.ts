@@ -8,9 +8,20 @@ function formatDate(date: string): string {
 
 function transformUser(user: IUser): IUser {
   return {
-    ...user,
-    createdAt: formatDate(user.createdAt),
-    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : "",
+    id: user.id ?? "",
+    email: user.email ?? "",
+    username: user.username ?? "",
+    email_confirmed: user.email_confirmed ?? false,
+    role: user.role ?? "user",
+    is_active: user.is_active ?? true,
+    first_name: user.first_name ?? "",
+    last_name: user.last_name ?? "",
+    avatar_url: user.avatar_url ?? "",
+    description: user.description ?? "",
+    phone: user.phone ?? "",
+    password: user.password ?? "",
+    created_at: formatDate(user.created_at),
+    last_login_at: user.last_login_at ? formatDate(user.last_login_at) : "",
     birthday: user.birthday ? formatDate(user.birthday) : "",
   };
 }

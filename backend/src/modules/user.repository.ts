@@ -31,7 +31,7 @@ export class UserRepository {
 
   async createUser(user: IUser): Promise<IUser> {
     const { rows } = await pool.query(
-      `INSERT INTO users (id, email, username, password, "firstName", "lastName", "avatarUrl", description, birthday, "phoneNumber", role, "isActive", "emailVerified", "lastLoginAt", "createdAt")
+      `INSERT INTO users (id, email, username, password, first_name, last_name, avatar_url, description, birthday, phone, role, is_active, email_confirmed, last_login_at, created_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        RETURNING *`,
       [
@@ -39,17 +39,17 @@ export class UserRepository {
         user.email,
         user.username,
         user.password,
-        user.firstName,
-        user.lastName,
-        user.avatarUrl,
+        user.first_name,
+        user.last_name,
+        user.avatar_url,
         user.description,
         user.birthday,
-        user.phoneNumber,
+        user.phone,
         user.role,
-        user.isActive,
-        user.emailVerified,
-        user.lastLoginAt,
-        user.createdAt,
+        user.is_active,
+        user.email_confirmed,
+        user.last_login_at,
+        user.created_at,
       ]
     );
     return rows[0];
@@ -57,22 +57,22 @@ export class UserRepository {
 
   async updateUser(id: string, user: IUser): Promise<IUser> {
     const { rows } = await pool.query(
-      `UPDATE users SET email = $1, username = $2, "firstName" = $3, "lastName" = $4, "avatarUrl" = $5, description = $6, birthday = $7, "phoneNumber" = $8, role = $9, "isActive" = $10, "emailVerified" = $11, "lastLoginAt" = $12, "createdAt" = $13
+      `UPDATE users SET email = $1, username = $2, first_name = $3, last_name = $4, avatar_url = $5, description = $6, birthday = $7, phone = $8, role = $9, is_active = $10, email_confirmed = $11, last_login_at = $12, created_at = $13
 			WHERE id = $14 RETURNING *`,
       [
         user.email,
         user.username,
-        user.firstName,
-        user.lastName,
-        user.avatarUrl,
+        user.first_name,
+        user.last_name,
+        user.avatar_url,
         user.description,
         user.birthday,
-        user.phoneNumber,
+        user.phone,
         user.role,
-        user.isActive,
-        user.emailVerified,
-        user.lastLoginAt,
-        user.createdAt,
+        user.is_active,
+        user.email_confirmed,
+        user.last_login_at,
+        user.created_at,
         id,
       ]
     );

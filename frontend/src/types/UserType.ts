@@ -4,29 +4,29 @@ export interface IUser {
   email: string;
   username: string;
 
-  emailVerified: boolean;
-  createdAt: string;
+  email_confirmed: boolean;
+  created_at: string;
   role: "user" | "admin" | "moderator";
-  isActive: boolean;
-  lastLoginAt: string | null;
+  is_active: boolean;
+  last_login_at: string | null;
 
   password: string;
-  firstName: string | null;
-  lastName: string | null;
-  avatarUrl: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
   description: string | null;
   birthday: string | null;
-  phoneNumber: string | null;
+  phone: string | null;
 }
 
 export interface IUserDto {
   email: string;
   username: string;
   password: string;
-  firstName: string | null;
-  lastName: string | null;
-  avatarUrl: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
   description: string | null;
   birthday: string | null;
-  phoneNumber: string | null;
+  phone: string | null;
 }
