@@ -4,7 +4,7 @@ services:
     container_name: db
     restart: always
     env_file:
-      - ./.env.example
+      - ./.env.local
       - ./.env
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: backend
     env_file:
-      - ../backend/.env.example
+      - ../backend/.env.local
       - ../backend/.env
     environment:
       DB_HOST: db
@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: frontend
     env_file:
-      - ../frontend/.env.example
+      - ../frontend/.env.local
       - ../frontend/.env
     depends_on:
       - backend
