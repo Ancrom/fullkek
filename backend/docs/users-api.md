@@ -13,11 +13,12 @@ username: string                         - имя пользователя
 **Read-only**
 
 ```
-emailVerified: boolean                   - подтверждён или нет адрес электронной почты
+emailConfirmed: boolean                   - подтверждён или нет адрес электронной почты
 createdAt: Date                          - дата и время создания
 role: 'user' | 'admin' |'moderator'      - роль пользователя
 isActive?: boolean                       - статус активности
 lastLoginAt: Date                        - дата и время последней авторизации
+updatedAt: Date                          - дата и время последнего изменения
 ```
 
 **Mutable**
@@ -78,6 +79,7 @@ GET /users?page=1&limit=20
       "birthday": "12/25/2025",
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
+			"updatedAt": "2024-01-01T00:00:00Z",
       "phoneNumber": "+0-000-000-00-00"
     }
   ],
@@ -148,9 +150,10 @@ GET /users/550e8400-e29b-41d4-a716-446655440000
   "phoneNumber": "+0-000-000-00-00",
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": "2024-01-20T10:15:00Z",
-  "createdAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z",
+	"updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -225,9 +228,10 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00",
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": "2024-01-20T10:15:00Z",
-  "createdAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z",
+	"updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -246,9 +250,10 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00"
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": null,
-  "createdAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z",
+	"updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -267,7 +272,7 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00",
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": "2024-01-20T10:15:00Z",
   "createdAt": "2024-01-16T14:30:00Z"
 }
@@ -353,7 +358,7 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00",
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": "2024-01-20T10:15:00Z",
   "createdAt": "2024-01-16T14:30:00Z"
 }
@@ -374,9 +379,10 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00"
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": null,
-  "createdAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z",
+	"updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -395,9 +401,10 @@ Content-Type: application/json
   "phoneNumber": "+0-000-000-00-00",
   "role": "user",
   "isActive": true,
-  "emailVerified": false,
+  "emailConfirmed": false,
   "lastLoginAt": "2024-01-20T10:15:00Z",
-  "createdAt": "2024-01-16T14:30:00Z"
+  "createdAt": "2024-01-16T14:30:00Z",
+	"updatedAt": "2024-01-01T00:00:00Z"
 }
 ```
 
@@ -480,4 +487,3 @@ DELETE /users/123
 | POST   | /users      | ❌ Нет          |
 | PUT    | /users/{id} | ✅ Да           |
 | DELETE | /users/{id} | ✅ Да           |
-

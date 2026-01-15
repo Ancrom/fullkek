@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY,
 	username TEXT UNIQUE NOT NULL,
 	email TEXT UNIQUE NOT NULL,
   password TEXT,
@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_lower ON users (LOWER(email));
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (LOWER(username));
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username);

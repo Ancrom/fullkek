@@ -3,7 +3,6 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { pool } from "./db";
 import userRoutes from "./routes/user.routes";
-import { log } from "console";
 
 dotenv.config();
 

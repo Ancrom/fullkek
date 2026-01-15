@@ -73,9 +73,10 @@ export class UserService {
       role: user?.role ?? "user",
       isActive: user?.isActive ?? true,
       lastLoginAt: user?.lastLoginAt ?? null,
+			updatedAt: user?.updatedAt ?? null,
 
-      email: dto.email,
-      username: dto.username,
+      email: dto.email.toLowerCase(),
+      username: dto.username.toLowerCase(),
       password: dto.password,
 
       firstName: normalizeString(dto.firstName),

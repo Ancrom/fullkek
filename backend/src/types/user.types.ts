@@ -9,6 +9,7 @@ export interface IUser {
   role: "user" | "admin" | "moderator";
   isActive: boolean;
   lastLoginAt: Date | null;
+	updatedAt: Date | null;
 
   password: string;
   firstName: string | null;

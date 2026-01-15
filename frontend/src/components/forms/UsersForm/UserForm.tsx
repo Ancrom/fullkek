@@ -94,7 +94,7 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label htmlFor="firstName">firstName</label>
+                <label htmlFor="firstName">Firstname</label>
                 <Field
                   id="firstName"
                   name="firstName"
@@ -108,7 +108,7 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="lastName">lastName</label>
+                <label htmlFor="lastName">Lastname</label>
                 <Field
                   id="lastName"
                   name="lastName"
