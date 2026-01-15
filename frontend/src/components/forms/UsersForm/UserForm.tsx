@@ -24,9 +24,9 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
           .max(16, "Max 16 characters")
           .required("Required"),
         password: Yup.string().min(8, "Min 8 characters").required("Required"),
-        first_name: Yup.string().max(20, "Max 20 characters"),
-        last_name: Yup.string().max(20, "Max 20 characters"),
-        avatar_url: Yup.string().url("Invalid URL"),
+        firstName: Yup.string().max(20, "Max 20 characters"),
+        lastName: Yup.string().max(20, "Max 20 characters"),
+        avatarUrl: Yup.string().url("Invalid URL"),
         description: Yup.string().max(100, "Max 100 characters"),
         birthday: Yup.date(),
         phone: Yup.string().max(20, "Max 20 characters"),
@@ -94,43 +94,43 @@ export default function UserForm({ initialValues, id }: IUserFormProps) {
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label htmlFor="first_name">first_name</label>
+                <label htmlFor="firstName">firstName</label>
                 <Field
-                  id="first_name"
-                  name="first_name"
+                  id="firstName"
+                  name="firstName"
                   type="text"
                   placeholder="Alexander"
                 />
                 <ErrorMessage
-                  name="first_name"
+                  name="firstName"
                   component="div"
                   className={styles.error}
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="last_name">last_name</label>
+                <label htmlFor="lastName">lastName</label>
                 <Field
-                  id="last_name"
-                  name="last_name"
+                  id="lastName"
+                  name="lastName"
                   type="text"
                   placeholder="Pushkin"
                 />
                 <ErrorMessage
-                  name="last_name"
+                  name="lastName"
                   component="div"
                   className={styles.error}
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="avatar_url">Avatar URL</label>
+                <label htmlFor="avatarUrl">Avatar URL</label>
                 <Field
-                  id="avatar_url"
-                  name="avatar_url"
+                  id="avatarUrl"
+                  name="avatarUrl"
                   type="text"
                   placeholder="www.example.com"
                 />
                 <ErrorMessage
-                  name="avatar_url"
+                  name="avatarUrl"
                   component="div"
                   className={styles.error}
                 />

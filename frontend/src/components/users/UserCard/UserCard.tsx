@@ -11,7 +11,7 @@ export default function UserCard({ user }: IUserCardProps) {
   return (
     <li className={styles.userCard}>
       <div className={styles.top}>
-        <span>Created at: {user.created_at}</span>
+        <span>Created at: {user.createdAt}</span>
         <NavLink to={`/users/edit/${user.id}`}>
           <Icon name="edit" size={24} className={styles.icon} />
         </NavLink>
@@ -23,7 +23,7 @@ export default function UserCard({ user }: IUserCardProps) {
           <span className={styles.highlight}>{user.role}</span>
         </span>
         <span>
-          {user.is_active ? (
+          {user.isActive ? (
             <span className={styles.active}>active</span>
           ) : (
             <span className={styles.inactive}>inactive</span>
@@ -32,7 +32,7 @@ export default function UserCard({ user }: IUserCardProps) {
         <span>
           Last login at:&nbsp;
           <span className={styles.highlight}>
-            {user.last_login_at || "never"}
+            {user.lastLoginAt || "never"}
           </span>
         </span>
         <span>

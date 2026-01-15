@@ -10,19 +10,19 @@ import {
 const router = Router();
 
 // GET /users - получить список пользователей
-router.get("/users", getUsers);
+router.get("/", getUsers);
 
 // GET /users/:id - получить пользователя по ID
-router.get("/users/:id", getUserById);
+router.get("/:id", getUserById);
 
 // POST /users - создать пользователя
-router.post("/users", createUser);
+router.post("/", createUser);
 
 // PUT /users/:id - обновить пользователя по ID
-router.put("/users/:id", updateUser);
-router.put("/users/", updateUser);
+router.put("/:id", updateUser);
+router.put("/", updateUser);
 
 // DELETE /users/:id - удалить пользователя по ID
-router.delete("/users/:id", deleteUser);
+router.delete("/:id", deleteUser);
 
 export default router;

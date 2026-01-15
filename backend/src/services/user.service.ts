@@ -15,67 +15,72 @@ export class UserService {
     id?: string,
     mode: "create" | "update" = "create"
   ) {
-    if (!dto.email || !dto.username || !dto.password) {
-      throw new errors.ValidationError(
-        "email, username and password are required"
-      );
-    }
-    if (mode === "update" && !id) {
-      throw new errors.ValidationError("ID is required");
-    }
-    if (id && !validators.isUUID(id)) {
-      throw new errors.ValidationError("ID is not valid UUID");
-    }
-    if (dto.email && !validators.isEmail(dto.email)) {
-      throw new errors.ValidationError("Email is not valid");
-    }
-    if (dto.username && !/^[a-zA-Z0-9_]{3,16}$/.test(dto.username)) {
-      throw new errors.ValidationError(
-        "Username must be between 3 and 16 characters"
-      );
-    }
-    if (dto.password && dto.password.length < 8) {
-      throw new errors.ValidationError(
-        "Password must be at least 8 characters"
-      );
-    }
-    if (dto.first_name && dto.first_name && dto.first_name.length > 20) {
-      throw new errors.ValidationError(
-        "First name must be at most 20 characters"
-      );
-    }
-    if (dto.last_name && dto.last_name && dto.last_name.length > 20) {
-      throw new errors.ValidationError(
-        "Last name must be at most 20 characters"
-      );
-    }
-    if (dto.avatar_url && dto.avatar_url && !validators.isURL(dto.avatar_url)) {
-      throw new errors.ValidationError("Avatar URL is not valid");
-    }
-    if (dto.description && dto.description && dto.description.length > 100) {
-      throw new errors.ValidationError(
-        "Description must be at most 100 characters"
-      );
-    }
+    const rules = [
+      {
+        condition: !dto.email || !dto.username || !dto.password,
+        error: "email, username and password are required",
+      },
+      {
+        condition: mode === "update" && !id,
+        error: "ID is required",
+      },
+      {
+        condition: id && !validators.isUUID(id),
+        error: "ID is not valid UUID",
+      },
+      {
+        condition: dto.email && !validators.isEmail(dto.email),
+        error: "Email is not valid",
+      },
+      {
+        condition: dto.username && !/^[a-zA-Z0-9_]{3,16}$/.test(dto.username),
+        error: "Username must be between 3 and 16 characters",
+      },
+      {
+        condition: dto.password && dto.password.length < 8,
+        error: "Password must be at least 8 characters",
+      },
+      {
+        condition: dto.firstName && dto.firstName.length > 20,
+        error: "First name must be at most 20 characters",
+      },
+      {
+        condition: dto.lastName && dto.lastName.length > 20,
+        error: "Last name must be at most 20 characters",
+      },
+      {
+        condition: dto.avatarUrl && !validators.isURL(dto.avatarUrl),
+        error: "Avatar URL is not valid",
+      },
+      {
+        condition: dto.description && dto.description.length > 100,
+        error: "Description must be at most 100 characters",
+      },
+    ];
+		for (const rule of rules) {
+			if (rule.condition) {
+				throw new errors.ValidationError(rule.error);
+			}
+		}
   }
 
   private buildUser(dto: IPostUserDto, user?: IUser): IUser {
     return {
       id: user?.id ?? crypto.randomUUID(),
 
-      email_confirmed: user?.email_confirmed ?? false,
-      created_at: user?.created_at ?? new Date(),
+      emailConfirmed: user?.emailConfirmed ?? false,
+      createdAt: user?.createdAt ?? new Date(),
       role: user?.role ?? "user",
-			is_active: user?.is_active ?? true,
-			last_login_at: user?.last_login_at ?? null,
+      isActive: user?.isActive ?? true,
+      lastLoginAt: user?.lastLoginAt ?? null,
 
       email: dto.email,
       username: dto.username,
       password: dto.password,
 
-      first_name: normalizeString(dto.first_name),
-      last_name: normalizeString(dto.last_name),
-      avatar_url: normalizeString(dto.avatar_url),
+      firstName: normalizeString(dto.firstName),
+      lastName: normalizeString(dto.lastName),
+      avatarUrl: normalizeString(dto.avatarUrl),
       description: normalizeString(dto.description),
       birthday: dto.birthday ? new Date(dto.birthday) : null,
       phone: normalizeString(dto.phone),
@@ -109,7 +114,7 @@ export class UserService {
       params.limit === undefined
     ) {
       throw new errors.ValidationError(
-        "Page and limit must be integers. Page >= 1, 1 <= limit <= 100"
+        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
       );
     }
 

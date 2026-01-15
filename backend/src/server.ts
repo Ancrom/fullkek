@@ -3,22 +3,24 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { pool } from "./db";
 import userRoutes from "./routes/user.routes";
+import { log } from "console";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "http://localhost",
-		credentials: true,
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
   })
 );
 
 app.use(express.json());
 
-app.use("/api", userRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "OK" });
