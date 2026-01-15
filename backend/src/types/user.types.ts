@@ -4,11 +4,12 @@ export interface IUser {
   email: string;
   username: string;
 
-  emailVerified: boolean;
+  emailConfirmed: boolean;
   createdAt: Date;
   role: "user" | "admin" | "moderator";
   isActive: boolean;
   lastLoginAt: Date | null;
+	updatedAt: Date | null;
 
   password: string;
   firstName: string | null;
@@ -16,23 +17,10 @@ export interface IUser {
   avatarUrl: string | null;
   description: string | null;
   birthday: Date | null;
-  phoneNumber: string | null;
+  phone: string | null;
 }
 
-export type CreateUserDto = {
-  email: string;
-  username: string;
-  password: string;
-	
-  firstName: string;
-  lastName: string;
-  avatarUrl: string;
-  description: string;
-  birthday: Date;
-  phoneNumber: string;
-};
-
-export type UpdateUserDto = {
+export interface IPostUserDto {
   email: string;
   username: string;
   password: string;
@@ -41,6 +29,6 @@ export type UpdateUserDto = {
   lastName: string | null;
   avatarUrl: string | null;
   description: string | null;
-  birthday: Date | null;
-  phoneNumber: string | null;
-};
+  birthday: string | null;
+  phone: string | null;
+}

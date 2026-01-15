@@ -1,0 +1,32 @@
+
+# === OS / IDE ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# === Node / Frontend ===
+node_modules/
+dist/
+build/
+.vite/
+
+# === Backend ===
+vendor/
+.env
+.env.*
+!.env.local
+
+# === Docker ===
+**/.dockerignore
+
+# === Logs ===
+logs/
+*.log
+
+# === Test / Coverage ===
+coverage/
+
+# === Temporary ===
+tmp/
+.cache/

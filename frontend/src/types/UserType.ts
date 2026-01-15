@@ -4,7 +4,7 @@ export interface IUser {
   email: string;
   username: string;
 
-  emailVerified: boolean;
+  emailConfirmed: boolean;
   createdAt: string;
   role: "user" | "admin" | "moderator";
   isActive: boolean;
@@ -16,7 +16,7 @@ export interface IUser {
   avatarUrl: string | null;
   description: string | null;
   birthday: string | null;
-  phoneNumber: string | null;
+  phone: string | null;
 }
 
 export interface IUserDto {
@@ -28,5 +28,5 @@ export interface IUserDto {
   avatarUrl: string | null;
   description: string | null;
   birthday: string | null;
-  phoneNumber: string | null;
+  phone: string | null;
 }

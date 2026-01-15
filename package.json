@@ -1,0 +1,8 @@
+{
+  "name": "fullkek",
+  "version": "1.0.0",
+  "scripts": {
+    "env:init": "node -e \"['infra', 'backend', 'frontend'].forEach(dir => { const fs = require('fs'); const src = './' + dir + '/.env.local'; const dest = './' + dir + '/.env'; if (fs.existsSync(src) && !fs.existsSync(dest)) { fs.copyFileSync(src, dest); console.log('Created ' + dest) } })\"",
+    "dev": "npm run env:init && docker compose -f infra/docker-compose.yml up"
+  }
+}

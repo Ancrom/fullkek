@@ -37,7 +37,7 @@ export default function UserCard({ user }: IUserCardProps) {
         </span>
         <span>
           Phone number:&nbsp;
-          <span className={styles.highlight}>{user.phoneNumber}</span>
+          <span className={styles.highlight}>{user.phone}</span>
         </span>
       </div>
     </li>

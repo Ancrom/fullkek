@@ -21,3 +21,10 @@ export class ConflictError extends HttpError {
     super(409, "CONFLICT", message);
   }
 }
+
+export const errors = {
+	HttpError,
+	ValidationError,
+	NotFoundError,
+	ConflictError,
+};

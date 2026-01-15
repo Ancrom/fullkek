@@ -6,9 +6,10 @@ import UserCard from "../UserCard/UserCard";
 import Icon from "../../ui/Icons/Icon";
 import styles from "./usersList.module.scss";
 
+
 export default function UsersList() {
   const [search, setSearch] = useState("");
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["users"],
     queryFn: () => fetchUsersService(),
     refetchInterval: 5000,
@@ -24,6 +25,9 @@ export default function UsersList() {
       user.username.toLowerCase().includes(search.toLowerCase())
     );
   });
+
+	console.log(data);
+
 
   const renderUsers = (users: IUser[]) => {
     return (

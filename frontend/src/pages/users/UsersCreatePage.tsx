@@ -10,7 +10,7 @@ const initialValues = {
   avatarUrl: "",
   description: "",
   birthday: "",
-  phoneNumber: "",
+  phone: "",
 };
 
 export default function UsersFormPage() {

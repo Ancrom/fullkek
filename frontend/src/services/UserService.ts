@@ -8,7 +8,18 @@ function formatDate(date: string): string {
 
 function transformUser(user: IUser): IUser {
   return {
-    ...user,
+    id: user.id ?? "",
+    email: user.email ?? "",
+    username: user.username ?? "",
+    emailConfirmed: user.emailConfirmed ?? false,
+    role: user.role ?? "user",
+    isActive: user.isActive ?? true,
+    firstName: user.firstName ?? "",
+    lastName: user.lastName ?? "",
+    avatarUrl: user.avatarUrl ?? "",
+    description: user.description ?? "",
+    phone: user.phone ?? "",
+    password: user.password ?? "",
     createdAt: formatDate(user.createdAt),
     lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : "",
     birthday: user.birthday ? formatDate(user.birthday) : "",

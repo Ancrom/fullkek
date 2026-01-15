@@ -6,12 +6,12 @@ import Icon from "../../ui/Icons/Icon";
 import styles from "./userForm.module.scss";
 import clsx from "clsx";
 
-interface IUsersFormProps {
+interface IUserFormProps {
   initialValues: IUserDto;
   id?: string;
 }
 
-export default function UserForm({ initialValues, id }: IUsersFormProps) {
+export default function UserForm({ initialValues, id }: IUserFormProps) {
   return (
     <Formik
       enableReinitialize={true}
@@ -28,8 +28,8 @@ export default function UserForm({ initialValues, id }: IUsersFormProps) {
         lastName: Yup.string().max(20, "Max 20 characters"),
         avatarUrl: Yup.string().url("Invalid URL"),
         description: Yup.string().max(100, "Max 100 characters"),
-        birthday: Yup.date().nullable(),
-        phoneNumber: Yup.string().max(20, "Max 20 characters"),
+        birthday: Yup.date(),
+        phone: Yup.string().max(20, "Max 20 characters"),
       })}
     >
       {({ isSubmitting, status }) => (
@@ -94,7 +94,7 @@ export default function UserForm({ initialValues, id }: IUsersFormProps) {
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label htmlFor="firstName">firstname</label>
+                <label htmlFor="firstName">Firstname</label>
                 <Field
                   id="firstName"
                   name="firstName"
@@ -153,15 +153,15 @@ export default function UserForm({ initialValues, id }: IUsersFormProps) {
                 />
               </div>
               <div className={styles.field}>
-                <label htmlFor="phoneNumber">Phone number</label>
+                <label htmlFor="phone">Phone number</label>
                 <Field
-                  id="phoneNumber"
-                  name="phoneNumber"
+                  id="phone"
+                  name="phone"
                   type="text"
                   placeholder="+0-999-888-77-66"
                 />
                 <ErrorMessage
-                  name="phoneNumber"
+                  name="phone"
                   component="div"
                   className={styles.error}
                 />
