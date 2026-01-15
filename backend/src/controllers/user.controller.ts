@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
 import { userRepository } from "../modules/user.repository";
-import { UserService } from "../services/user.serviсe";
+import { UserService } from "../services/user.service";
 import { HttpError } from "../errors/HttpError";
 
 const userServiceIns = new UserService(userRepository);
