@@ -1,14 +1,14 @@
-import { describe, it, expect, jest } from "@jest/globals";
+import { describe, it, expect, vitest } from "vitest";
 
 import { UserService } from "../../src/services/user.service";
 import { beforeEach } from "node:test";
 
 describe("UserService.createUser", () => {
   const repo = {
-    getUserById: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
+    getUserById: vitest.fn(),
+    createUser: vitest.fn(),
+    updateUser: vitest.fn(),
+    deleteUser: vitest.fn(),
   } as any;
 
   const service = new UserService(repo);
@@ -163,10 +163,10 @@ describe("UserService.createUser", () => {
 
 describe("UserService.updateUser", () => {
   const repo = {
-    getUserById: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
+    getUserById: vitest.fn(),
+    createUser: vitest.fn(),
+    updateUser: vitest.fn(),
+    deleteUser: vitest.fn(),
   } as any;
 
   const service = new UserService(repo);
@@ -184,7 +184,7 @@ describe("UserService.updateUser", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
   });
 
   it("updates user successfully", async () => {
@@ -319,17 +319,17 @@ describe("UserService.updateUser", () => {
 
 describe("UserService.deleteUser", () => {
   const repo = {
-    getUserById: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
+    getUserById: vitest.fn(),
+    createUser: vitest.fn(),
+    updateUser: vitest.fn(),
+    deleteUser: vitest.fn(),
   } as any;
 
   const service = new UserService(repo);
   const userId = "550e8400-e29b-41d4-a716-446655440000";
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
   });
 
   it("deletes user successfully", async () => {
@@ -353,17 +353,17 @@ describe("UserService.deleteUser", () => {
 
 describe("UserService.getPage", () => {
   const repo = {
-    getAllUsers: jest.fn(),
-    getUserById: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
+    getAllUsers: vitest.fn(),
+    getUserById: vitest.fn(),
+    createUser: vitest.fn(),
+    updateUser: vitest.fn(),
+    deleteUser: vitest.fn(),
   } as any;
 
   const service = new UserService(repo);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
   });
 
   it("returns paginated users successfully", async () => {
