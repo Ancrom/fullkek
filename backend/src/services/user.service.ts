@@ -89,19 +89,24 @@ export class UserService {
   }
 
   private handleConflict(e: DatabaseError) {
-    if (e.code === "23505") {
-      if (e.constraint === "users_email_key") {
-        throw new errors.ConflictError("Email already in use");
+    const rules = [
+      {
+        condition:
+          e.code === "23505" && e.constraint?.includes("users_email_key"),
+        error: "Email already in use",
+      },
+      {
+        condition:
+          e.code === "23505" && e.constraint?.includes("users_username_key"),
+        error: "Username already in use",
       }
-
-      if (e.constraint === "users_username_key") {
-        throw new errors.ConflictError("Username already in use");
+    ];
+    for (const rule of rules) {
+      if (rule.condition) {
+        throw new errors.ConflictError(rule.error);
       }
-
-      throw new errors.ConflictError("User already exists");
     }
-
-    throw e;
+		throw e;
   }
 
   async getPage(params: {
