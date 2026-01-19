@@ -30,3 +30,13 @@ export interface IUserDto {
   birthday: string | null;
   phone: string | null;
 }
+
+export interface IUserRes{
+  data: IUser[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

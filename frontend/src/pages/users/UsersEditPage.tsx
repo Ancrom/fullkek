@@ -18,10 +18,6 @@ export default function UsersEditPage() {
     queryKey: ["user", id],
     queryFn: () => fetchUserByIdService(id!),
   });
-
-	console.log(user);
-	
-
   return (
     <MainLayout type="edit">
       {isLoading && <Icon name="spinner" size={24} />}
