@@ -33,7 +33,7 @@ export class UserRepository {
   async createUser(user: IUser): Promise<IUser> {
     const { rows } = await pool.query(
       `INSERT INTO users (id, email, username, password, first_name, last_name, avatar_url, description, birthday, phone, role, is_active, email_confirmed, last_login_at, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
        RETURNING *`,
       [
         user.id,
