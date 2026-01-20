@@ -26,9 +26,6 @@ export default function UsersList() {
     );
   });
 
-	console.log(data);
-
-
   const renderUsers = (users: IUser[]) => {
     return (
       <ul className={styles.list}>

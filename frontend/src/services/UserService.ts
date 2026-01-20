@@ -1,36 +1,38 @@
-import type { IUser, IUserDto } from "../types/UserType";
+import type { IUser, IUserDto, IUserRes } from "../types/UserType";
 import { usersApi } from "../api/usersApi";
 
-function formatDate(date: string): string {
+export function formatDate(date: string | null): string {
   if (!date) return "";
-  return new Date(date).toISOString().slice(0, 10);
+  const d = new Date(date);
+  return !isNaN(d.getTime()) ? d.toISOString().split("T")[0] : "";
 }
 
-function transformUser(user: IUser): IUser {
+export function transformUser(user: IUser): IUser {
   return {
-    id: user.id ?? "",
-    email: user.email ?? "",
-    username: user.username ?? "",
-    emailConfirmed: user.emailConfirmed ?? false,
-    role: user.role ?? "user",
-    isActive: user.isActive ?? true,
-    firstName: user.firstName ?? "",
-    lastName: user.lastName ?? "",
-    avatarUrl: user.avatarUrl ?? "",
-    description: user.description ?? "",
-    phone: user.phone ?? "",
-    password: user.password ?? "",
-    createdAt: formatDate(user.createdAt),
-    lastLoginAt: user.lastLoginAt ? formatDate(user.lastLoginAt) : "",
-    birthday: user.birthday ? formatDate(user.birthday) : "",
+    id: user?.id ?? "",
+    email: user?.email ?? "",
+    username: user?.username ?? "",
+    emailConfirmed: user?.emailConfirmed ?? false,
+    role: user?.role ?? "user",
+    isActive: user?.isActive ?? true,
+    firstName: user?.firstName ?? "",
+    lastName: user?.lastName ?? "",
+    avatarUrl: user?.avatarUrl ?? "",
+    description: user?.description ?? "",
+    phone: user?.phone ?? "",
+    password: user?.password ?? "",
+    createdAt: formatDate(user?.createdAt),
+    lastLoginAt: formatDate(user?.lastLoginAt),
+    birthday: formatDate(user?.birthday),
   };
 }
 
 export async function fetchUsersService(
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<IUser[]> {
-  const response: { data: IUser[] } = await usersApi.fetchUsers(page, limit);
+  const response: IUserRes = await usersApi.fetchUsers(page, limit);
+  if (!response?.data || !Array.isArray(response.data)) return [];
   return response.data.map(transformUser);
 }
 
