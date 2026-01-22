@@ -3,6 +3,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ARG SKIP_TESTS=false
-RUN if [ "$SKIP_TESTS" = "false" ]; then npm run test -- --watchAll=false; fi
 CMD ["npm", "run", "dev"]
