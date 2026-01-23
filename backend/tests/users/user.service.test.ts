@@ -5,6 +5,7 @@ import { beforeEach } from "node:test";
 
 describe("UserService.createUser", () => {
   const repo = {
+		getPage: vitest.fn(),
     getUserById: vitest.fn(),
     createUser: vitest.fn(),
     updateUser: vitest.fn(),
@@ -353,7 +354,8 @@ describe("UserService.deleteUser", () => {
 
 describe("UserService.getPage", () => {
   const repo = {
-    getAllUsers: vitest.fn(),
+    getPage: vitest.fn(),
+		getCount: vitest.fn(),
     getUserById: vitest.fn(),
     createUser: vitest.fn(),
     updateUser: vitest.fn(),
@@ -372,43 +374,52 @@ describe("UserService.getPage", () => {
       email: `user${i}@test.com`,
       username: `user${i}`,
     }));
+		const mockCount = 50;
 
-    repo.getAllUsers.mockResolvedValue(mockUsers);
+    repo.getPage.mockResolvedValue(mockUsers);
+		repo.getCount.mockResolvedValue(mockCount);
 
-    const result = await service.getPage({ page: 1, limit: 10 });
+    const result = await service.getPage({ page: 1, limit: 25 });
 
-    expect(repo.getAllUsers).toHaveBeenCalled();
-    expect(result.data).toHaveLength(10);
+    expect(repo.getPage).toHaveBeenCalled();
+		expect(repo.getPage).toHaveBeenCalledWith(0, 25);
+		expect(repo.getCount).toHaveBeenCalled();
+    expect(result.data).toHaveLength(25);
     expect(result.pagination.page).toBe(1);
-    expect(result.pagination.limit).toBe(10);
-    expect(result.pagination.total).toBe(25);
-    expect(result.pagination.totalPages).toBe(3);
+    expect(result.pagination.limit).toBe(25);
+    expect(result.pagination.total).toBe(50);
+    expect(result.pagination.totalPages).toBe(2);
   });
 
-  it("returns correct page for second page", async () => {
-    const mockUsers = Array.from({ length: 25 }, (_, i) => ({
-      id: `user-${i}`,
-      email: `user${i}@test.com`,
-      username: `user${i}`,
+it("returns correct page for second page", async () => {
+    const secondPageUsers = Array.from({ length: 10 }, (_, i) => ({
+      id: `user-${i + 10}`,
+      email: `user${i + 10}@test.com`,
+      username: `user${i + 10}`,
     }));
 
-    repo.getAllUsers.mockResolvedValue(mockUsers);
+    repo.getPage.mockResolvedValue(secondPageUsers);
+    repo.getCount.mockResolvedValue(50);
 
     const result = await service.getPage({ page: 2, limit: 10 });
 
     expect(result.data).toHaveLength(10);
     expect(result.pagination.page).toBe(2);
+    expect(result.pagination.total).toBe(50);
     expect(result.data[0].id).toBe("user-10");
-  });
+
+    expect(repo.getPage).toHaveBeenCalledWith(10, 10);
+});
 
   it("returns correct page for last page with partial results", async () => {
-    const mockUsers = Array.from({ length: 25 }, (_, i) => ({
+    const mockUsers = Array.from({ length: 5 }, (_, i) => ({
       id: `user-${i}`,
       email: `user${i}@test.com`,
       username: `user${i}`,
     }));
 
-    repo.getAllUsers.mockResolvedValue(mockUsers);
+    repo.getPage.mockResolvedValue(mockUsers);
+		repo.getCount.mockResolvedValue(25);
 
     const result = await service.getPage({ page: 3, limit: 10 });
 
@@ -418,13 +429,14 @@ describe("UserService.getPage", () => {
   });
 
   it("handles string page and limit parameters", async () => {
-    const mockUsers = Array.from({ length: 15 }, (_, i) => ({
+    const mockUsers = Array.from({ length: 5 }, (_, i) => ({
       id: `user-${i}`,
       email: `user${i}@test.com`,
       username: `user${i}`,
     }));
 
-    repo.getAllUsers.mockResolvedValue(mockUsers);
+    repo.getPage.mockResolvedValue(mockUsers);
+		repo.getCount.mockResolvedValue(25);
 
     const result = await service.getPage({ page: "2", limit: "5" });
 

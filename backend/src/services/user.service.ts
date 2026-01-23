@@ -139,13 +139,9 @@ export class UserService {
       );
     }
 
-    const users = await this.repo.getAllUsers();
-    const total = users.length;
-
-    const start = (pageNum - 1) * limitNum;
-    const end = start + limitNum;
-
-    const data: IUser[] = users.slice(start, end);
+		const offset = (pageNum - 1) * limitNum;
+    const data = await this.repo.getPage(offset, limitNum);
+    const total = await this.repo.getCount();
 
     return {
       data,
