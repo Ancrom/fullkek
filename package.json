@@ -1,8 +1,19 @@
 {
   "name": "fullkek",
   "version": "1.0.0",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
     "env:init": "node -e \"['infra', 'backend', 'frontend'].forEach(dir => { const fs = require('fs'); const src = './' + dir + '/.env.local'; const dest = './' + dir + '/.env'; if (fs.existsSync(src) && !fs.existsSync(dest)) { fs.copyFileSync(src, dest); console.log('Created ' + dest) } })\"",
-    "dev": "npm run env:init && docker compose -f infra/docker-compose.yml up"
+    "dev": "npm run env:init && docker compose -f infra/docker-compose.yml up",
+    "test": "npm test --workspaces --if-present -- --run",
+    "test:f": "npm test --workspace=frontend -- --run",
+    "test:b": "npm test --workspace=backend -- --run",
+    "test:b:i": "npm run test:int --workspace=backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

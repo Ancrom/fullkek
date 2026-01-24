@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
+dotenv.config();
 import { pool } from "./db";
 import userRoutes from "./routes/user.routes";
 
-dotenv.config();
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
@@ -25,7 +25,7 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "OK" });
 });
 
-async function start() {
+export async function start() {
   try {
     await pool.query("SELECT 1");
     console.log("✅ PostgreSQL connected");
@@ -39,4 +39,7 @@ async function start() {
   }
 }
 
-start();
+if (process.env.NODE_ENV != 'test') {
+	start()
+}
+
