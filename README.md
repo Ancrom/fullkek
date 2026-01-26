@@ -14,50 +14,24 @@ fullkek/
 ## **Технологический стек**
 
 ### Backend
-- **Node.js** 16+
-- **Express** 5.x
-- **TypeScript**
-- **PostgreSQL** 16
-- **pg** (PostgreSQL клиент)
+* **Node.js** 16+
+* **Express** 5.x
+* **TypeScript**
+* **PostgreSQL** 16
+* **pg** (PostgreSQL клиент)
 
 ### Frontend
-- **React**
-- **TypeScript**
-- **Vite**
-- **Axios**
+* **React**
+* **TypeScript**
+* **Vite**
+* **Axios**
 
 ### Инфраструктура
-- **Docker** & **Docker Compose**
-- **PostgreSQL** 16
-- **Nginx** (reverse proxy для frontend и backend API)
-
-## **ERD-схема базы данных**
-
-```mermaid
-erDiagram
-    users {
-        UUID id PK
-        TEXT username UK
-        TEXT email UK
-        TEXT password
-        TEXT first_name
-        TEXT last_name
-        TEXT avatar_url
-        TEXT description
-        DATE birthday
-        TEXT phone
-        TEXT role
-        BOOLEAN is_active
-        BOOLEAN email_confirmed
-        TIMESTAMP last_login_at
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-```
+* **Docker** & **Docker Compose**
+* **PostgreSQL** 16
+* **Nginx** (reverse proxy для frontend и backend API)
 
 ## **Переменные окружения**
-
-### Переменные окружения
 
 Файл `infra/.env` используется Docker Compose. Укажите значения:
 
@@ -75,7 +49,7 @@ DB_PASSWORD=fullkek_password
 
 ### Предварительные требования
 
-- Docker и Docker Compose
+* Docker и Docker Compose
 
 ### Запуск проекта
 
@@ -90,17 +64,17 @@ npm run dev
 ```
 
 Сервисы будут доступны:
-- **Frontend** (через Nginx): `http://localhost:80`
-- **Backend API** (через Nginx): `http://localhost:80/api/`
-- **Backend** (напрямую): `http://localhost:3000`
-- **PostgreSQL**: `localhost:5432`
+* **Frontend** (через Nginx): `http://localhost:80`
+* **Backend API** (через Nginx): `http://localhost:80/api/`
+* **Backend** (напрямую): `http://localhost:3000`
+* **PostgreSQL**: `localhost:5432`
 
 #### 3. Hot-reload и разработка
 
 Проект настроен для разработки с hot-reload:
-- **Backend**: изменения в файлах `backend/` автоматически перезагружают сервер
-- **Frontend**: изменения в файлах `frontend/` автоматически обновляют страницу в браузере
-- Код монтируется через volumes, поэтому изменения применяются мгновенно
+* **Backend**: изменения в файлах `backend/` автоматически перезагружают сервер
+* **Frontend**: изменения в файлах `frontend/` автоматически обновляют страницу в браузере
+* Код монтируется через volumes, поэтому изменения применяются мгновенно
 
 **Примечание:** Docker Compose автоматически использует переменные из `infra/.env` для настройки всех сервисов. Переменные передаются в контейнеры через секцию `environment:` в `docker-compose.yml`.
 
@@ -120,43 +94,9 @@ npm run dev
 }
 ```
 
-### Users API
-
-Полная документация API доступна в `backend/docs/users-api.md`
-
-#### Получение списка пользователей
-
-**GET /api/users?page={n}&limit={l}**
-
-Параметры:
-- `page` - номер страницы (положительное целое число от 1)
-- `limit` - количество пользователей на страницу (от 1 до 100)
-
-Пример: `GET /api/users?page=1&limit=20`
-
-#### Получение пользователя по ID
-
-**GET /api/users/{id}**
-
-Пример: `GET /api/users/550e8400-e29b-41d4-a716-446655440000`
-
-#### Создание пользователя
-
-**POST /api/users**
-
-Обязательные поля: `email`, `username`, `password`
-
-#### Обновление пользователя
-
-**PUT /api/users/{id}**
-
-#### Удаление пользователя
-
-**DELETE /api/users/{id}**
+---
 
 ## **Разработка**
-
-Все команды разработки выполняются внутри Docker контейнеров.
 
 ### Линтинг
 
@@ -165,6 +105,8 @@ npm run dev
 ```bash
 docker exec backend npm run lint
 ```
+
+---
 
 ### Тестирование
 
@@ -176,6 +118,8 @@ npm run test:f   - запуск только frontend-тестов
 npm run test:b   - запуск только backend-тестов
 npm run test:b:i - запуск только интеграционных backend-тестов
 ```
+
+---
 
 ### Просмотр логов
 
@@ -193,15 +137,14 @@ cd infra
 docker-compose logs -f backend
 docker-compose logs -f frontend
 docker-compose logs -f nginx
+docker-compose logs -f db
 ```
 
-## **Changelog**
+## Документация
 
-**v1.0.0**
-- Базовая настройка Express
-- Health check эндпоинт
-- CRUD операции для пользователей
-- Интеграция с PostgreSQL
-- Docker Compose конфигурация
-- React frontend с TypeScript
-- Nginx reverse proxy для frontend и backend API
+Подробная документация вынесена в каталог `backend/docs`
+
+* **Auth API** - эндпоинты аутентификации
+* **Authentication** - архитектура аутентификации
+* **Users API** - управление пользователями
+* **ERD** - ER-диаграмма базы данных
