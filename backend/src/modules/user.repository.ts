@@ -49,9 +49,29 @@ export class UserRepository {
 
   async createUser(user: IUser): Promise<IUser> {
     const { rows } = await pool.query<IUserRow>(
-      `INSERT INTO users (id, email, username, password, first_name, last_name, avatar_url, description, birthday, phone, role, is_active, email_confirmed, last_login_at, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-       RETURNING *`,
+      `INSERT INTO users (
+      		id,
+      		email,
+      		username,
+      		password,
+      		first_name,
+      		last_name,
+      		avatar_url,
+      		description,
+      		birthday,
+      		phone,
+      		role,
+      		is_active,
+      		email_confirmed,
+      		last_login_at,
+      		created_at,
+      		updated_at
+    		)
+    		VALUES (
+      		$1,  $2,  $3,  $4,  $5,  $6,  $7,  $8,
+      		$9,  $10, $11, $12, $13, $14, $15, $16
+    		)
+    	RETURNING *`,
       [
         user.id,
         user.email,
@@ -76,11 +96,28 @@ export class UserRepository {
 
   async updateUser(id: string, user: IUser): Promise<IUser> {
     const { rows } = await pool.query<IUserRow>(
-      `UPDATE users SET email = $1, username = $2, first_name = $3, last_name = $4, avatar_url = $5, description = $6, birthday = $7, phone = $8, role = $9, is_active = $10, email_confirmed = $11, last_login_at = $12, created_at = $13, updated_at = $14
-			WHERE id = $15 RETURNING *`,
+      `UPDATE users
+    		SET email = $1,
+         username = $2,
+         password = $3,
+         first_name = $4,
+         last_name = $5,
+         avatar_url = $6,
+         description = $7,
+         birthday = $8,
+         phone = $9,
+         role = $10,
+         is_active = $11,
+         email_confirmed = $12,
+         last_login_at = $13,
+         created_at = $14,
+         updated_at = $15
+     		WHERE id = $16
+     		RETURNING *`,
       [
         user.email,
         user.username,
+        user.password,
         user.firstName,
         user.lastName,
         user.avatarUrl,
@@ -96,6 +133,7 @@ export class UserRepository {
         id,
       ],
     );
+
     return userMapper(rows[0]);
   }
 

@@ -4,6 +4,7 @@ import { UserRepository } from "../modules/user.repository";
 import { errors } from "../errors/HttpError";
 import { validators } from "../utils/validators/validators";
 import { normalizeString } from "../utils/normalizeString";
+import * as argon2 from "argon2";
 
 export class UserService {
   constructor(private repo: UserRepository) {
@@ -13,7 +14,7 @@ export class UserService {
   private validateUser(
     dto: IPostUserDto,
     id?: string,
-    mode: "create" | "update" = "create"
+    mode: "create" | "update" = "create",
   ) {
     const rules = [
       {
@@ -57,14 +58,14 @@ export class UserService {
         error: "Description must be at most 100 characters",
       },
     ];
-		for (const rule of rules) {
-			if (rule.condition) {
-				throw new errors.ValidationError(rule.error);
-			}
-		}
+    for (const rule of rules) {
+      if (rule.condition) {
+        throw new errors.ValidationError(rule.error);
+      }
+    }
   }
 
-  private buildUser(dto: IPostUserDto, user?: IUser): IUser {
+  private async buildUser(dto: IPostUserDto, user?: IUser) {
     return {
       id: user?.id ?? crypto.randomUUID(),
 
@@ -73,11 +74,11 @@ export class UserService {
       role: user?.role ?? "user",
       isActive: user?.isActive ?? true,
       lastLoginAt: user?.lastLoginAt ?? null,
-			updatedAt: user?.updatedAt ?? null,
+      updatedAt: user?.updatedAt ?? null,
 
       email: dto.email.toLowerCase(),
       username: dto.username.toLowerCase(),
-      password: dto.password,
+      password: await argon2.hash(dto.password),
 
       firstName: normalizeString(dto.firstName),
       lastName: normalizeString(dto.lastName),
@@ -99,14 +100,14 @@ export class UserService {
         condition:
           e.code === "23505" && e.constraint?.includes("users_username_key"),
         error: "Username already in use",
-      }
+      },
     ];
     for (const rule of rules) {
       if (rule.condition) {
         throw new errors.ConflictError(rule.error);
       }
     }
-		throw e;
+    throw e;
   }
 
   async getPage(params: {
@@ -120,7 +121,7 @@ export class UserService {
       params.limit === undefined
     ) {
       throw new errors.ValidationError(
-        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
       );
     }
 
@@ -135,11 +136,11 @@ export class UserService {
       limitNum > 100
     ) {
       throw new errors.ValidationError(
-        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+        "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
       );
     }
 
-		const offset = (pageNum - 1) * limitNum;
+    const offset = (pageNum - 1) * limitNum;
     const data = await this.repo.getPage(offset, limitNum);
     const total = await this.repo.getCount();
 
@@ -172,7 +173,8 @@ export class UserService {
   async createUser(dto: IPostUserDto) {
     this.validateUser(dto);
     try {
-      return await this.repo.createUser(this.buildUser(dto));
+			const userData = await this.buildUser(dto);
+      return await this.repo.createUser(userData);
     } catch (e: unknown) {
       this.handleConflict(e as DatabaseError);
     }
@@ -181,7 +183,8 @@ export class UserService {
   async updateUser(id: string, dto: IPostUserDto) {
     this.validateUser(dto, id, "update");
     try {
-      const user = await this.repo.updateUser(id, this.buildUser(dto));
+      const userData = await this.buildUser(dto);
+      const user = await this.repo.updateUser(id, userData);
       if (!user) {
         throw new errors.NotFoundError("User not found");
       }
