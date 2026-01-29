@@ -168,8 +168,13 @@ docker exec backend npm run lint
 
 ### Тестирование
 
+Запуск тестов осуществляется из корневой директории проекта
+
 ```bash
-docker exec backend npm test
+npm run test     - запуск всех тестов
+npm run test:f   - запуск только frontend-тестов
+npm run test:b   - запуск только backend-тестов
+npm run test:b:i - запуск только интеграционных backend-тестов
 ```
 
 ### Просмотр логов
