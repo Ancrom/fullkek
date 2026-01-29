@@ -2,14 +2,16 @@ import { AuthRepository } from "../modules/auth.repository";
 import { UnauthorizedError, ForbiddenError } from "../errors/HttpError";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
-import type { IUser } from "../types/user.types";
+import type { IUser, IJWTPayload } from "../types/user.types";
 
 export class AuthService {
   constructor(private repo: AuthRepository) {
     this.repo = repo;
   }
 
-  private makeResponse(user: IUser) {
+  private makeResponse(
+    user: Pick<IUser, "id" | "email" | "username" | "role">,
+  ) {
     return {
       id: user.id,
       email: user.email,
@@ -18,23 +20,8 @@ export class AuthService {
     };
   }
 
-  private makeToken(param: IUser | string) {
+  private makeToken(payload: IJWTPayload) {
     const JWT_SECRET = process.env.JWT_SECRET;
-
-    let payload;
-
-    if (typeof param === "string") {
-      payload = {
-        sub: param,
-        role: param,
-      };
-    } else {
-      payload = {
-        sub: param.id,
-        role: param.role,
-      };
-    }
-
     return jwt.sign(payload, JWT_SECRET as string, { expiresIn: "1d" });
   }
 
@@ -47,13 +34,16 @@ export class AuthService {
   }
 
   async login(dto: { email: string; password: string }) {
+    if (!dto || !dto.email || !dto.password) {
+      throw new UnauthorizedError("Invalid email or password");
+    }
     const user = await this.getUserByEmail(dto.email);
     const isValid = await argon2.verify(user.password, dto.password);
     if (!isValid) {
       throw new UnauthorizedError("Invalid email or password");
     }
 
-    const token = this.makeToken(user);
+    const token = this.makeToken({ sub: user.id, role: user.role });
     return {
       token,
       user: this.makeResponse(user),
@@ -66,18 +56,27 @@ export class AuthService {
     }
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET!);
-      const user = await this.repo.getUserById(payload.sub as string);
-      return this.makeResponse(user);
+      const user = await this.repo.getUserById((payload as any).sub);
+      return this.makeResponse({
+				id: user.id,
+				email: user.email,
+				username: user.username,
+				role: user.role,
+			});
     } catch (e) {
+			console.log(e)
       throw new UnauthorizedError("Invalid or expired token");
     }
   }
 
   async refresh(token: string) {
-    if (!token) {
-      throw new UnauthorizedError("No access token");
-    }
+    if (!token) throw new UnauthorizedError("No access token");
 
-    this.makeToken(token);
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
+      sub: string;
+      role: IUser["role"];
+    };
+
+    return this.makeToken(payload);
   }
 }
