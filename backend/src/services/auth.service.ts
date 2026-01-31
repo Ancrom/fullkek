@@ -57,6 +57,9 @@ export class AuthService {
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET!);
       const user = await this.repo.getUserById((payload as any).sub);
+			if (!user) {
+				throw new UnauthorizedError("User not found");
+			}
       return this.makeResponse({
 				id: user.id,
 				email: user.email,
@@ -64,7 +67,6 @@ export class AuthService {
 				role: user.role,
 			});
     } catch (e) {
-			console.log(e)
       throw new UnauthorizedError("Invalid or expired token");
     }
   }

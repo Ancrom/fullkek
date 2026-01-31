@@ -18,7 +18,7 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const getUserById = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   try {
     const user = await userServiceIns.getUserById(id);
     res.status(200).json(user);
@@ -38,7 +38,7 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   const user = req.body;
   try {
     const updatedUser = await userServiceIns.updateUser(id, user);
@@ -49,7 +49,7 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   try {
     userServiceIns.deleteUser(id);
     return res.status(200).json({ message: "User deleted successfully" });
