@@ -22,9 +22,21 @@ export class ConflictError extends HttpError {
   }
 }
 
+export class UnauthorizedError extends HttpError {
+	constructor(message: string) {
+		super(401, "UNAUTHORIZED_ERROR", message);
+	}
+}
+
+export class ForbiddenError extends HttpError {
+	constructor(message: string) {
+		super(403, "FORBIDDEN_ERROR", message);
+	}
+}
+
 export const errors = {
 	HttpError,
 	ValidationError,
 	NotFoundError,
-	ConflictError,
+	ConflictError
 };
