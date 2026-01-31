@@ -2,24 +2,9 @@ import type { Request, Response } from "express";
 
 import { userRepository } from "../modules/user.repository";
 import { UserService } from "../services/user.service";
-import { HttpError } from "../errors/HttpError";
+import { handleError } from "./handleError";
 
 const userServiceIns = new UserService(userRepository);
-
-function handleError(res: Response, e: unknown) {
-  if (e instanceof HttpError) {
-    res.status(e.status).json({
-      code: e.code,
-      message: e.message,
-    });
-    return;
-  }
-
-  return res.status(500).json({
-    code: "INTERNAL_ERROR",
-    message: "Internal server error",
-  });
-}
 
 export const getUsers = async (req: Request, res: Response) => {
   const page = req.query.page as string | undefined;
@@ -33,7 +18,7 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const getUserById = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   try {
     const user = await userServiceIns.getUserById(id);
     res.status(200).json(user);
@@ -53,7 +38,7 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   const user = req.body;
   try {
     const updatedUser = await userServiceIns.updateUser(id, user);
@@ -64,7 +49,7 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.id as string;
   try {
     userServiceIns.deleteUser(id);
     return res.status(200).json({ message: "User deleted successfully" });

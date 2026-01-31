@@ -1,11 +1,10 @@
-import { describe, it, expect, vitest } from "vitest";
+import { describe, it, expect, vitest, beforeEach } from "vitest";
 
 import { UserService } from "../../src/services/user.service";
-import { beforeEach } from "node:test";
 
 describe("UserService.createUser", () => {
   const repo = {
-		getPage: vitest.fn(),
+    getPage: vitest.fn(),
     getUserById: vitest.fn(),
     createUser: vitest.fn(),
     updateUser: vitest.fn(),
@@ -40,13 +39,13 @@ describe("UserService.createUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_email_key",
-      })
+      }),
     );
 
     await expect(
       service.createUser({
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("Email already in use");
   });
 
@@ -55,13 +54,13 @@ describe("UserService.createUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_username_key",
-      })
+      }),
     );
 
     await expect(
       service.createUser({
         ...userFields, // different email, but same username
-      } as any)
+      } as any),
     ).rejects.toThrow("Username already in use");
   });
 
@@ -70,14 +69,14 @@ describe("UserService.createUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_email_key",
-      })
+      }),
     );
 
     await expect(
       service.createUser({
         ...userFields,
         email: "TEST@TEST.COM", // uppercase, but should conflict with lowercase
-      } as any)
+      } as any),
     ).rejects.toThrow("Email already in use");
   });
 
@@ -86,14 +85,14 @@ describe("UserService.createUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_username_key",
-      })
+      }),
     );
 
     await expect(
       service.createUser({
         ...userFields,
         username: "USERNAME", // uppercase, but should conflict with lowercase
-      } as any)
+      } as any),
     ).rejects.toThrow("Username already in use");
   });
 
@@ -102,7 +101,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         email: "invalid-email",
-      } as any)
+      } as any),
     ).rejects.toThrow("Email is not valid");
   });
 
@@ -111,7 +110,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         username: "invalid-username",
-      } as any)
+      } as any),
     ).rejects.toThrow("Username must be between 3 and 16 characters");
   });
 
@@ -120,7 +119,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         password: "invalid", // less than 8 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("Password must be at least 8 characters");
   });
 
@@ -129,7 +128,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         firstName: "fffffffffffffffffffff", // more than 20 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("First name must be at most 20 characters");
   });
 
@@ -138,7 +137,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         lastName: "fffffffffffffffffffff", // more than 20 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("Last name must be at most 20 characters");
   });
 
@@ -147,7 +146,7 @@ describe("UserService.createUser", () => {
       service.createUser({
         ...userFields,
         avatarUrl: "invalid-url", // invalid URL
-      } as any)
+      } as any),
     ).rejects.toThrow("Avatar URL is not valid");
   });
 
@@ -157,7 +156,7 @@ describe("UserService.createUser", () => {
         ...userFields,
         description:
           "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean ma", // more than 100 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("Description must be at most 100 characters");
   });
 });
@@ -208,7 +207,7 @@ describe("UserService.updateUser", () => {
     await expect(
       service.updateUser(userId, {
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("User not found");
   });
 
@@ -216,7 +215,7 @@ describe("UserService.updateUser", () => {
     await expect(
       service.updateUser("", {
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("ID is required");
   });
 
@@ -224,7 +223,7 @@ describe("UserService.updateUser", () => {
     await expect(
       service.updateUser("invalid-id", {
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("ID is not valid UUID");
   });
 
@@ -233,13 +232,13 @@ describe("UserService.updateUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_email_key",
-      })
+      }),
     );
 
     await expect(
       service.updateUser(userId, {
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("Email already in use");
   });
 
@@ -248,13 +247,13 @@ describe("UserService.updateUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_username_key",
-      })
+      }),
     );
 
     await expect(
       service.updateUser(userId, {
         ...userFields,
-      } as any)
+      } as any),
     ).rejects.toThrow("Username already in use");
   });
 
@@ -263,14 +262,14 @@ describe("UserService.updateUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_email_key",
-      })
+      }),
     );
 
     await expect(
       service.updateUser(userId, {
         ...userFields,
         email: "TEST@TEST.COM", // uppercase, but should conflict with lowercase
-      } as any)
+      } as any),
     ).rejects.toThrow("Email already in use");
   });
 
@@ -279,14 +278,14 @@ describe("UserService.updateUser", () => {
       Object.assign(new Error(), {
         code: "23505",
         constraint: "users_username_key",
-      })
+      }),
     );
 
     await expect(
       service.updateUser(userId, {
         ...userFields,
         username: "USERNAME", // uppercase, but should conflict with lowercase
-      } as any)
+      } as any),
     ).rejects.toThrow("Username already in use");
   });
 
@@ -295,7 +294,7 @@ describe("UserService.updateUser", () => {
       service.updateUser(userId, {
         ...userFields,
         email: "invalid-email",
-      } as any)
+      } as any),
     ).rejects.toThrow("Email is not valid");
   });
 
@@ -304,7 +303,7 @@ describe("UserService.updateUser", () => {
       service.updateUser(userId, {
         ...userFields,
         username: "ab", // less than 3 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("Username must be between 3 and 16 characters");
   });
 
@@ -313,7 +312,7 @@ describe("UserService.updateUser", () => {
       service.updateUser(userId, {
         ...userFields,
         password: "short", // less than 8 characters
-      } as any)
+      } as any),
     ).rejects.toThrow("Password must be at least 8 characters");
   });
 });
@@ -347,7 +346,7 @@ describe("UserService.deleteUser", () => {
 
   it("throws error if ID is not valid UUID", async () => {
     await expect(service.deleteUser("invalid-id")).rejects.toThrow(
-      "ID is not valid UUID"
+      "ID is not valid UUID",
     );
   });
 });
@@ -355,7 +354,7 @@ describe("UserService.deleteUser", () => {
 describe("UserService.getPage", () => {
   const repo = {
     getPage: vitest.fn(),
-		getCount: vitest.fn(),
+    getCount: vitest.fn(),
     getUserById: vitest.fn(),
     createUser: vitest.fn(),
     updateUser: vitest.fn(),
@@ -374,16 +373,16 @@ describe("UserService.getPage", () => {
       email: `user${i}@test.com`,
       username: `user${i}`,
     }));
-		const mockCount = 50;
+    const mockCount = 50;
 
     repo.getPage.mockResolvedValue(mockUsers);
-		repo.getCount.mockResolvedValue(mockCount);
+    repo.getCount.mockResolvedValue(mockCount);
 
     const result = await service.getPage({ page: 1, limit: 25 });
 
     expect(repo.getPage).toHaveBeenCalled();
-		expect(repo.getPage).toHaveBeenCalledWith(0, 25);
-		expect(repo.getCount).toHaveBeenCalled();
+    expect(repo.getPage).toHaveBeenCalledWith(0, 25);
+    expect(repo.getCount).toHaveBeenCalled();
     expect(result.data).toHaveLength(25);
     expect(result.pagination.page).toBe(1);
     expect(result.pagination.limit).toBe(25);
@@ -391,7 +390,7 @@ describe("UserService.getPage", () => {
     expect(result.pagination.totalPages).toBe(2);
   });
 
-it("returns correct page for second page", async () => {
+  it("returns correct page for second page", async () => {
     const secondPageUsers = Array.from({ length: 10 }, (_, i) => ({
       id: `user-${i + 10}`,
       email: `user${i + 10}@test.com`,
@@ -409,7 +408,7 @@ it("returns correct page for second page", async () => {
     expect(result.data[0].id).toBe("user-10");
 
     expect(repo.getPage).toHaveBeenCalledWith(10, 10);
-});
+  });
 
   it("returns correct page for last page with partial results", async () => {
     const mockUsers = Array.from({ length: 5 }, (_, i) => ({
@@ -419,7 +418,7 @@ it("returns correct page for second page", async () => {
     }));
 
     repo.getPage.mockResolvedValue(mockUsers);
-		repo.getCount.mockResolvedValue(25);
+    repo.getCount.mockResolvedValue(25);
 
     const result = await service.getPage({ page: 3, limit: 10 });
 
@@ -436,7 +435,7 @@ it("returns correct page for second page", async () => {
     }));
 
     repo.getPage.mockResolvedValue(mockUsers);
-		repo.getCount.mockResolvedValue(25);
+    repo.getCount.mockResolvedValue(25);
 
     const result = await service.getPage({ page: "2", limit: "5" });
 
@@ -447,71 +446,71 @@ it("returns correct page for second page", async () => {
 
   it("throws error if page is missing", async () => {
     await expect(
-      service.getPage({ page: undefined, limit: 10 })
+      service.getPage({ page: undefined, limit: 10 }),
     ).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is missing", async () => {
     await expect(
-      service.getPage({ page: 1, limit: undefined })
+      service.getPage({ page: 1, limit: undefined }),
     ).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if page is empty string", async () => {
     await expect(service.getPage({ page: "", limit: 10 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is empty string", async () => {
     await expect(service.getPage({ page: 1, limit: "" })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if page is less than 1", async () => {
     await expect(service.getPage({ page: 0, limit: 10 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is less than 1", async () => {
     await expect(service.getPage({ page: 1, limit: 0 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is greater than 100", async () => {
     await expect(service.getPage({ page: 1, limit: 101 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if page is not an integer", async () => {
     await expect(service.getPage({ page: 1.5, limit: 10 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is not an integer", async () => {
     await expect(service.getPage({ page: 1, limit: 10.5 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if page is not a number", async () => {
     await expect(service.getPage({ page: "abc", limit: 10 })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 
   it("throws error if limit is not a number", async () => {
     await expect(service.getPage({ page: 1, limit: "abc" })).rejects.toThrow(
-      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100"
+      "Page and limit must be integers. Page >= 1, limit >= 1, limit <= 100",
     );
   });
 });
