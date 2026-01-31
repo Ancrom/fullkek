@@ -1,9 +1,11 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 dotenv.config();
 import { pool } from "./db";
 import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
 
 
 export const app = express();
@@ -16,9 +18,9 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(express.json());
-
+app.use(cookieParser());
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/api/health", (req: Request, res: Response) => {
