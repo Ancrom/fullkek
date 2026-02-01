@@ -22,7 +22,12 @@ export const login = async (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
   try {
-    await authServiceIns.refresh(req.cookies.access_token);
+    const token = await authServiceIns.refresh(req.cookies.access_token);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
     return res.status(200).json({ status: "refreshed" });
   } catch (e) {
     return handleError(res, e);
