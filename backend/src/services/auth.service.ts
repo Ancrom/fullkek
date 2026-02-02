@@ -57,14 +57,30 @@ export class AuthService {
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET!);
       const user = await this.repo.getUserById((payload as any).sub);
+			if (!user) {
+				throw new UnauthorizedError("User not found");
+			}
       return this.makeResponse({
 				id: user.id,
 				email: user.email,
 				username: user.username,
 				role: user.role,
 			});
+<<<<<<< HEAD
+    } catch (e) {
+<<<<<<< HEAD
+			console.log(e)
+=======
+      const user = await this.repo.getUserById(payload.sub as string);
+      return this.makeResponse(user);
+    } catch (e) {
+>>>>>>> b64ec4c (issue #39: Добавить Auth API; issue #42: Добавить хэширование и верификацию паролей)
+=======
     } catch (e) {
 			console.log(e)
+>>>>>>> 7d88b78 (Issue #39: Добавлены тесты, переработал сервис auth.service)
+=======
+>>>>>>> dee61d8 (issue #44: Добавить защиту маршрутов)
       throw new UnauthorizedError("Invalid or expired token");
     }
   }
