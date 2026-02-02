@@ -2,24 +2,9 @@ import type { Request, Response } from "express";
 
 import { userRepository } from "../modules/user.repository";
 import { UserService } from "../services/user.service";
-import { HttpError } from "../errors/HttpError";
+import { handleError } from "./handleError";
 
 const userServiceIns = new UserService(userRepository);
-
-function handleError(res: Response, e: unknown) {
-  if (e instanceof HttpError) {
-    res.status(e.status).json({
-      code: e.code,
-      message: e.message,
-    });
-    return;
-  }
-
-  return res.status(500).json({
-    code: "INTERNAL_ERROR",
-    message: "Internal server error",
-  });
-}
 
 export const getUsers = async (req: Request, res: Response) => {
   const page = req.query.page as string | undefined;

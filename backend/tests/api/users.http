@@ -1,4 +1,4 @@
-@host = http://localhost:3000/api
+@host = http://localhost:80/api
 @id = b6252555-eb50-4665-b476-b4ba5e3eaad3
 
 ### get list of users
