@@ -130,16 +130,13 @@ export class AuthService {
 
   async logout(refreshToken: string) {
     try {
-      const payload = jwt.verify(
-        refreshToken,
-        process.env.JWT_REFRESH_SECRET!,
-      ) as {
-        sub: string;
-      };
+      const payload = jwt.decode(refreshToken) as { sub: string };
 
-      await this.repo.deleteSessionByUserId(payload.sub);
+      if (payload?.sub) {
+        await this.repo.deleteSessionByUserId(payload.sub);
+      }
     } catch (e) {
-      throw new UnauthorizedError("Invalid or expired token");
+      console.error("Logout failed at DB level", e);
     }
   }
 }

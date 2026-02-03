@@ -31,12 +31,12 @@ export const refresh = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  try {
-    cookieUtils.clearAuthCookies(res);
-    return res.sendStatus(204);
-  } catch (e) {
-    return handleError(res, e);
+  const token = req.cookies.refresh_token;
+  if (token) {
+    await authServiceIns.logout(token);
   }
+  cookieUtils.clearAuthCookies(res);
+  return res.sendStatus(204);
 };
 
 export const checkSession = async (req: Request, res: Response) => {
