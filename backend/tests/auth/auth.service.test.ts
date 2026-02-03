@@ -7,9 +7,11 @@ vi.mock("jsonwebtoken", () => ({
   default: {
     sign: vitest.fn(),
     verify: vitest.fn(),
+		decode: vitest.fn(),
   },
   sign: vitest.fn(),
   verify: vitest.fn(),
+	decode: vitest.fn(),
 }));
 vi.mock("argon2");
 
@@ -240,20 +242,27 @@ describe("AuthService.refresh", () => {
   describe("AuthService.logout", () => {
     let repo: any;
     let service: any;
+    const mockSecret = "test-secret";
+
     beforeEach(() => {
+      process.env.JWT_REFRESH_SECRET = mockSecret;
       repo = {
-        deleteSessionByUserId: vitest.fn(),
+        deleteSessionByUserId: vi.fn(),
       };
-      vitest.clearAllMocks();
       service = new AuthService(repo);
+      vi.clearAllMocks();
     });
 
     it("logs out user successfully", async () => {
-      const userId = "1";
-      vi.mocked(jwt.verify).mockReturnValue({ sub: userId } as any);
+      const userId = "user-123";
+      const fakeToken = "ey-fake-token";
+
+      vi.spyOn(jwt, "decode").mockReturnValue({ sub: userId });
       repo.deleteSessionByUserId.mockResolvedValue(undefined);
-      await service.logout(userId);
-			expect(jwt.verify).toHaveBeenCalledWith(userId, process.env.JWT_REFRESH_SECRET!);
+
+      await service.logout(fakeToken);
+
+      expect(jwt.decode).toHaveBeenCalledWith(fakeToken);
       expect(repo.deleteSessionByUserId).toHaveBeenCalledWith(userId);
     });
   });
