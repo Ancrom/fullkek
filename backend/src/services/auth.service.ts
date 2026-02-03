@@ -2,7 +2,8 @@ import { AuthRepository } from "../modules/auth.repository";
 import { UnauthorizedError, ForbiddenError } from "../errors/HttpError";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
-import type { IUser, IJWTPayload } from "../types/user.types";
+import type { IUser } from "../types/user.types";
+import type { IJWTPayload } from "../types/auth.types";
 
 export class AuthService {
   constructor(private repo: AuthRepository) {
@@ -20,9 +21,17 @@ export class AuthService {
     };
   }
 
-  private makeToken(payload: IJWTPayload) {
-    const JWT_SECRET = process.env.JWT_SECRET;
-    return jwt.sign(payload, JWT_SECRET as string, { expiresIn: "1d" });
+  private makeTokens(payload: IJWTPayload) {
+    const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
+    const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+    return {
+      accessToken: jwt.sign({ ...payload }, ACCESS_SECRET as string, {
+        expiresIn: "15m",
+      }),
+      refreshToken: jwt.sign({ ...payload }, REFRESH_SECRET as string, {
+        expiresIn: "7d",
+      }),
+    };
   }
 
   private async getUserByEmail(email: string): Promise<IUser> {
@@ -34,19 +43,26 @@ export class AuthService {
   }
 
   async login(dto: { email: string; password: string }) {
-    if (!dto || !dto.email || !dto.password) {
+    if (!dto.email || !dto.password) {
       throw new UnauthorizedError("Invalid email or password");
     }
     const user = await this.getUserByEmail(dto.email);
-    const isValid = await argon2.verify(user.password, dto.password);
-    if (!isValid) {
+    if (!user || !(await argon2.verify(user.password, dto.password))) {
       throw new UnauthorizedError("Invalid email or password");
     }
 
-    const token = this.makeToken({ sub: user.id, role: user.role });
+    const tokens = this.makeTokens({ sub: user.id, role: user.role });
+    const REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7; // 7 дней;
+    await this.repo.createSession({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      tokenHash: await argon2.hash(tokens.refreshToken),
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+    });
+
     return {
-      token,
-      user: this.makeResponse(user),
+      ...tokens,
+      userData: this.makeResponse(user),
     };
   }
 
@@ -55,28 +71,75 @@ export class AuthService {
       throw new UnauthorizedError("No access token");
     }
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET!);
-      const user = await this.repo.getUserById((payload as any).sub);
+      const payload = jwt.verify(
+        token,
+        process.env.JWT_ACCESS_SECRET!,
+      ) as IJWTPayload;
+      const user = await this.repo.getUserById(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedError("User not found");
+      }
+
       return this.makeResponse({
-				id: user.id,
-				email: user.email,
-				username: user.username,
-				role: user.role,
-			});
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      });
     } catch (e) {
-			console.log(e)
       throw new UnauthorizedError("Invalid or expired token");
     }
   }
 
-  async refresh(token: string) {
-    if (!token) throw new UnauthorizedError("No access token");
+  async refresh(refreshToken: string) {
+    if (!refreshToken) throw new UnauthorizedError("No refresh token");
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
+    const payload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET!,
+    ) as {
       sub: string;
       role: IUser["role"];
     };
 
-    return this.makeToken(payload);
+    const session = await this.repo.getSessionByUserId(payload.sub);
+    if (!session) {
+      throw new ForbiddenError("Session not found");
+    }
+
+    const isValid = await argon2.verify(session.token_hash, refreshToken);
+    const isExpired = new Date() > new Date(session.expires_at);
+
+    if (!isValid || isExpired) {
+      await this.repo.deleteSessionById(session.id);
+      throw new ForbiddenError("Invalid or expired session");
+    }
+
+    const tokens = this.makeTokens({ sub: payload.sub, role: payload.role });
+
+    const REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60 * 1000;
+    await this.repo.updateSession({
+      id: session.id,
+      tokenHash: await argon2.hash(tokens.refreshToken),
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+    });
+
+    return tokens;
+  }
+
+  async logout(refreshToken: string) {
+    try {
+      const payload = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET!,
+      ) as {
+        sub: string;
+      };
+
+      await this.repo.deleteSessionByUserId(payload.sub);
+    } catch (e) {
+      throw new UnauthorizedError("Invalid or expired token");
+    }
   }
 }

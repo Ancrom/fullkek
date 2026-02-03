@@ -51,8 +51,3 @@ export interface IUserRow {
 	birthday: Date | null;
 	phone: string | null;
 }
-
-export interface IJWTPayload {
-	sub: string;
-	role: "user" | "admin" | "moderator";
-}
