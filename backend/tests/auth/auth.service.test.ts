@@ -4,8 +4,14 @@ import argon2 from "argon2";
 import { AuthService } from "../../src/services/auth.service";
 
 vi.mock("jsonwebtoken", () => ({
+  default: {
+    sign: vitest.fn(),
+    verify: vitest.fn(),
+		decode: vitest.fn(),
+  },
   sign: vitest.fn(),
   verify: vitest.fn(),
+	decode: vitest.fn(),
 }));
 vi.mock("argon2");
 
@@ -25,6 +31,7 @@ describe("AuthService.login", () => {
     repo = {
       getUserByEmail: vitest.fn(),
       getUserById: vitest.fn(),
+      createSession: vitest.fn(),
     };
 
     service = new AuthService(repo);
@@ -37,14 +44,18 @@ describe("AuthService.login", () => {
     };
     repo.getUserByEmail.mockResolvedValue(fakeUser);
     vi.mocked(argon2.verify).mockResolvedValue(true);
-    vi.mocked(jwt.sign).mockReturnValue("fake-access-token" as any);
+    vi.mocked(jwt.sign)
+      .mockReturnValueOnce("fake-access-token" as any)
+      .mockReturnValueOnce("fake-refresh-token" as any);
+
     const result = await service.login(dto);
 
     expect(repo.getUserByEmail).toHaveBeenCalledWith(dto.email);
     expect(argon2.verify).toHaveBeenCalledWith(fakeUser.password, dto.password);
     expect(result).toEqual({
-      token: "fake-access-token",
-      user: {
+      accessToken: "fake-access-token",
+      refreshToken: "fake-refresh-token",
+      userData: {
         id: fakeUser.id,
         email: fakeUser.email,
         username: fakeUser.username,
@@ -111,14 +122,14 @@ describe("AuthService.checkSession", () => {
     };
 
     service = new AuthService(repo);
-    process.env.JWT_SECRET = "secret";
+    process.env.JWT_ACCESS_SECRET = "secret";
   });
 
   it("checks session successfully", async () => {
     const mockPayload = { sub: fakeUser.id, role: fakeUser.role };
 
     vi.mocked(jwt.verify).mockReturnValue(mockPayload as any);
-    jwt.verify("token", process.env.JWT_SECRET!);
+    jwt.verify("token", process.env.JWT_ACCESS_SECRET!);
     repo.getUserById.mockResolvedValue(fakeUser);
 
     const result = await service.checkSession("token");
@@ -166,6 +177,11 @@ describe("AuthService.refresh", () => {
   let repo: any;
   let service: any;
   beforeEach(() => {
+    repo = {
+      getSessionByUserId: vitest.fn(),
+      deleteSessionById: vitest.fn(),
+      updateSession: vitest.fn(),
+    };
     vitest.clearAllMocks();
     service = new AuthService(repo);
   });
@@ -173,32 +189,81 @@ describe("AuthService.refresh", () => {
   it("refreshes token successfully", async () => {
     const oldToken = "old-token";
     const payload = { sub: "1", role: "user" };
-    const newToken = "new-token";
+    const newAccessToken = "new-access-token";
+    const newRefreshToken = "new-refresh-token";
+    const mockSession = {
+      id: "1",
+      user_id: "1",
+      token_hash: "hash",
+      expires_at: new Date(Date.now() + 1000 * 60 * 60),
+    };
 
+    repo.getSessionByUserId.mockResolvedValue(mockSession);
+    vi.mocked(argon2.verify).mockResolvedValue(true);
     vi.mocked(jwt.verify).mockReturnValue(payload as any);
-    vi.mocked(jwt.sign).mockReturnValue(newToken as any);
+    vi.mocked(jwt.sign)
+      .mockReturnValueOnce(newAccessToken as any)
+      .mockReturnValueOnce(newRefreshToken as any);
+    vi.mocked(argon2.hash).mockResolvedValue("new-hash");
 
     const result = await service.refresh(oldToken);
 
-    expect(jwt.verify).toHaveBeenCalledWith(oldToken, expect.any(String));
-    expect(jwt.sign).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        sub: payload.sub,
-        role: payload.role,
-      }),
-      expect.any(String),
-      expect.any(Object),
+    expect(jwt.verify).toHaveBeenCalledWith(
+      oldToken,
+      process.env.JWT_REFRESH_SECRET!,
     );
-    expect(result).toBe(newToken);
+    expect(repo.getSessionByUserId).toHaveBeenCalledWith(payload.sub);
+    expect(argon2.verify).toHaveBeenCalledWith(
+      mockSession.token_hash,
+      oldToken,
+    );
+
+    expect(jwt.sign).toHaveBeenCalledTimes(2);
+
+    expect(repo.updateSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: mockSession.id,
+        tokenHash: "new-hash",
+      }),
+    );
+    expect(result).toEqual({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
   });
 
-  it.each([
-    undefined,
-    null,
-		""
-  ])("throws error for invalid input: %o", async (token) => {
-    await expect(
-      service.refresh(token),
-    ).rejects.toThrow("No access token");
+  it.each([undefined, null, ""])(
+    "throws error for invalid input: %o",
+    async (token) => {
+      await expect(service.refresh(token)).rejects.toThrow("No refresh token");
+    },
+  );
+
+  describe("AuthService.logout", () => {
+    let repo: any;
+    let service: any;
+    const mockSecret = "test-secret";
+
+    beforeEach(() => {
+      process.env.JWT_REFRESH_SECRET = mockSecret;
+      repo = {
+        deleteSessionByUserId: vi.fn(),
+      };
+      service = new AuthService(repo);
+      vi.clearAllMocks();
+    });
+
+    it("logs out user successfully", async () => {
+      const userId = "user-123";
+      const fakeToken = "ey-fake-token";
+
+      vi.spyOn(jwt, "decode").mockReturnValue({ sub: userId });
+      repo.deleteSessionByUserId.mockResolvedValue(undefined);
+
+      await service.logout(fakeToken);
+
+      expect(jwt.decode).toHaveBeenCalledWith(fakeToken);
+      expect(repo.deleteSessionByUserId).toHaveBeenCalledWith(userId);
+    });
   });
 });

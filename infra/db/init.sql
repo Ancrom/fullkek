@@ -19,3 +19,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username);
+
+CREATE TABLE IF NOT EXISTS sessions (
+	id UUID PRIMARY KEY,
+	user_id UUID NOT NULL,
+	token_hash TEXT NOT NULL,
+	expires_at TIMESTAMP
+)

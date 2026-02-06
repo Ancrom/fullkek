@@ -2,6 +2,7 @@ import { beforeAll, afterEach, beforeEach, describe, it, expect } from "vitest";
 import request from "supertest";
 import { setupTestDB } from "../setup/vitest.setup";
 import { truncateAll } from "../helpers/db";
+import { getAuthCookie } from "../helpers/auth";
 
 let app: any;
 let pool: any;
@@ -73,7 +74,7 @@ describe("Users API (integration)", () => {
   const idExample: string = "b6252555-eb50-4665-b476-b4ba5e3eaad3";
 
   it("creates user", async () => {
-    const res = await request(app).post("/api/users").send({
+    const res = await request(app).post("/api/users").set("Cookie", getAuthCookie()).send({
       email: "test1@test.com",
       username: "testuser1",
       password: "hashedpassword",
@@ -90,39 +91,37 @@ describe("Users API (integration)", () => {
 
   it("returns page of users", async () => {
     const res = await request(app)
-      .get("/api/users")
+      .get("/api/users").set("Cookie", getAuthCookie())
       .query({ page: 1, limit: 10 });
 
     expect(res.status).toBe(200);
   });
 
   it("returns user", async () => {
-    const res = await request(app).get(`/api/users/${idExample}`);
+    const res = await request(app).get(`/api/users/${idExample}`).set("Cookie", getAuthCookie());
 
     expect(res.status).toBe(200);
   });
 
-	it("updates user", async () => {
-		const res = await request(app)
-			.put(`/api/users/${idExample}`)
-			.send({
-				email: "test1@test.com",
-				username: "testuser1",
-				password: "hashedpassword",
-				firstName: "Test",
-				lastName: "User",
-				avatarUrl: "https://example.com/avatar.jpg",
-				description: "Seed user",
-				birthday: "2000-01-01",
-				phoneNumber: "1234567890",
-			});
+  it("updates user", async () => {
+    const res = await request(app).put(`/api/users/${idExample}`).set("Cookie", getAuthCookie()).send({
+      email: "test1@test.com",
+      username: "testuser1",
+      password: "hashedpassword",
+      firstName: "Test",
+      lastName: "User",
+      avatarUrl: "https://example.com/avatar.jpg",
+      description: "Seed user",
+      birthday: "2000-01-01",
+      phoneNumber: "1234567890",
+    });
 
-		expect(res.status).toBe(200);
-	});
+    expect(res.status).toBe(200);
+  });
 
-	it("deletes user", async () => {
-		const res = await request(app).delete(`/api/users/${idExample}`);
+  it("deletes user", async () => {
+    const res = await request(app).delete(`/api/users/${idExample}`).set("Cookie", getAuthCookie());
 
-		expect(res.status).toBe(200);
-	});
+    expect(res.status).toBe(200);
+  });
 });
