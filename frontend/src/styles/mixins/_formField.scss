@@ -1,10 +1,10 @@
 @use "../../styles/vars" as *;
 @use "../../styles/mixins/mixins" as *;
 
-@mixin formField($color: $textPrimary, $fontSize: $fontSize, $fontWeight: 600) {
+@mixin formField($color: $textPrimary, $fontSize: $fontSize, $fontWeight: 600, $align: flex-start) {
 	color: $color;
 	font-size: $fontSizeSmall;
-	@include flex($direction: column, $align: flex-start, $gap: 8px);
+	@include flex($direction: column, $align: $align, $gap: 8px);
 	font-size: $fontSize;
 	label {
 		font-weight: $fontWeight;

@@ -1,0 +1,66 @@
+@use "../../../styles/vars" as *;
+@use "../../../styles/mixins/mixins" as *;
+@use "../../../styles/mixins/formField" as *;
+
+.form {
+	@include flex($direction: column, $align: stretch, $gap: 30px);
+	max-width: 550px;
+	margin: 0 auto;
+	& > .error {
+		font-size: $fontSizeBig;
+	}
+}
+.body {
+	@include flex($direction: column, $align: stretch, $gap: 30px);
+	border-radius: $borderRadius;
+	@media (width < $mobile) {
+		padding: 15px 10px;
+	}
+}
+.error {
+	color: $danger;
+	font-weight: 600;
+}
+.success {
+	color: $success;
+	font-weight: 600;
+}
+
+.field {
+	@include formField($color: $textSecondary, $align: stretch);
+	input {
+		flex: 1 1 auto;
+	}
+	.error {
+		color: $danger;
+	}
+}
+.buttons {
+	margin: 20px 0 0;
+	color: $textSecondary;
+	@include flex($justify: space-between, $gap: 30px);
+	width: 100%;
+	& > * {
+		font-weight: 800;
+		border-radius: 26px;
+		padding: 16px 20px;
+		flex: 1 1 auto;
+		cursor: pointer;
+	}
+	.submit {
+		background-color: $backgroundSecondary;
+		color: $textThird;
+		&:disabled {
+			cursor: not-allowed;
+		}
+	}
+	.reset {
+		color: $textSecondary;
+		outline: 2px solid $textSecondary;
+	}
+
+	@media (width < $mobile) {
+		flex-direction: column;
+		align-self: center;
+	}
+}
