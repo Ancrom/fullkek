@@ -32,12 +32,19 @@ export class AuthRepository {
     );
   }
 
-	async deleteSessionById(id: string) {
-		await pool.query("DELETE FROM sessions WHERE id = $1", [id]);
-	}
+  async deleteSessionById(id: string) {
+    await pool.query("DELETE FROM sessions WHERE id = $1", [id]);
+  }
 
   async deleteSessionByUserId(id: string) {
     await pool.query("DELETE FROM sessions WHERE user_id = $1", [id]);
+  }
+
+  async getSessionById(id: string) {
+    const { rows } = await pool.query("SELECT * FROM sessions WHERE id = $1", [
+      id,
+    ]);
+    return rows[0];
   }
 
   async getSessionByUserId(id: string) {

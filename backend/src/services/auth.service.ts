@@ -10,6 +10,8 @@ export class AuthService {
     this.repo = repo;
   }
 
+  private REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7; // 7 дней;
+
   private makeResponse(
     user: Pick<IUser, "id" | "email" | "username" | "role">,
   ) {
@@ -51,13 +53,17 @@ export class AuthService {
       throw new UnauthorizedError("Invalid email or password");
     }
 
-    const tokens = this.makeTokens({ sub: user.id, role: user.role });
-    const REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7; // 7 дней;
+    const uuid = crypto.randomUUID();
+    const tokens = this.makeTokens({
+      sub: user.id,
+      role: user.role,
+      sid: uuid,
+    });
     await this.repo.createSession({
-      id: crypto.randomUUID(),
+      id: uuid,
       userId: user.id,
       tokenHash: await argon2.hash(tokens.refreshToken),
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+      expiresAt: new Date(Date.now() + this.REFRESH_TOKEN_TTL),
     });
 
     return {
@@ -101,9 +107,10 @@ export class AuthService {
     ) as {
       sub: string;
       role: IUser["role"];
+      sid: string;
     };
 
-    const session = await this.repo.getSessionByUserId(payload.sub);
+    const session = await this.repo.getSessionById(payload.sid);
     if (!session) {
       throw new ForbiddenError("Session not found");
     }
@@ -116,13 +123,16 @@ export class AuthService {
       throw new ForbiddenError("Invalid or expired session");
     }
 
-    const tokens = this.makeTokens({ sub: payload.sub, role: payload.role });
+    const tokens = this.makeTokens({
+      sub: payload.sub,
+      role: payload.role,
+      sid: session.id,
+    });
 
-    const REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60 * 1000;
     await this.repo.updateSession({
       id: session.id,
       tokenHash: await argon2.hash(tokens.refreshToken),
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL),
+      expiresAt: new Date(Date.now() + this.REFRESH_TOKEN_TTL),
     });
 
     return tokens;
@@ -130,10 +140,10 @@ export class AuthService {
 
   async logout(refreshToken: string) {
     try {
-      const payload = jwt.decode(refreshToken) as { sub: string };
+      const payload = jwt.decode(refreshToken) as { sid?: string } | null;
 
-      if (payload?.sub) {
-        await this.repo.deleteSessionByUserId(payload.sub);
+      if (payload?.sid) {
+        await this.repo.deleteSessionById(payload.sid);
       }
     } catch (e) {
       console.error("Logout failed at DB level", e);
