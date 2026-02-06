@@ -8,4 +8,5 @@ export interface ISession {
 export interface IJWTPayload {
 	sub: string;
 	role: "user" | "admin" | "moderator";
+	sid: string
 }

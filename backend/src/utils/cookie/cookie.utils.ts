@@ -1,9 +1,11 @@
 import { Response } from "express";
+import path from "path";
 
 const cookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "strict" as const,
+  path: "/",
 };
 
 export const makeAuthCookies = (
@@ -16,25 +18,21 @@ export const makeAuthCookies = (
   res.cookie(`access_token`, token.accessToken, {
     ...cookieOptions,
     maxAge: ACCESS_TOKEN_TTL,
-    path: "/",
   });
 
   res.cookie(`refresh_token`, token.refreshToken, {
     ...cookieOptions,
     maxAge: REFRESH_TOKEN_TTL,
-    path: "/api/auth/refresh",
   });
 };
 
 export const clearAuthCookies = (res: Response) => {
   res.clearCookie("access_token", {
     ...cookieOptions,
-    path: "/",
   });
 
   res.clearCookie("refresh_token", {
     ...cookieOptions,
-    path: "/api/auth/refresh",
   });
 };
 
