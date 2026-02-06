@@ -15,7 +15,6 @@ const INITIAL: IUserDto = {
   email: '',
   username: '',
   password: '',
-  // Formik <Field /> works best with empty strings for optional text inputs
   firstName: '',
   lastName: '',
   avatarUrl: '',

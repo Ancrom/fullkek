@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --clear --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --clear --transpile-only --inspect=0.0.0.0:9229 src/server.ts",
     "test": "vitest",
     "test:int": "vitest run ./tests/**/*.int.test.ts",
     "test:watch": "vitest --watch",

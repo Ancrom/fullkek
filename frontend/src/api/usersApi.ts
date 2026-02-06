@@ -1,19 +1,16 @@
-import type { IUser, IUserDto } from "../types/UserType";
+import type {
+  IUser,
+  IUserDto,
+  IUserResLogin,
+  IUserRes,
+} from "../types/UserType";
 import { api } from "./api";
 
 export const usersApi = {
   fetchUsers: async (
     page: number = 1,
-    limit: number = 10
-  ): Promise<{
-    data: IUser[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  }> => {
+    limit: number = 10,
+  ): Promise<IUserRes> => {
     return api.get(`/users?page=${page}&limit=${limit}`).then((r) => r.data);
   },
 
@@ -25,4 +22,10 @@ export const usersApi = {
 
   update: async (id: string, dto: IUserDto): Promise<IUser> =>
     api.put<IUser>(`/users/${id}`, dto).then((r) => r.data),
+
+  login: async (dto: {
+    email: string;
+    password: string;
+  }): Promise<IUserResLogin> =>
+    api.post<IUser>("/auth/login", dto).then((r) => r.data),
 };

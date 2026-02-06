@@ -1,0 +1,24 @@
+@use "../../styles/vars" as *;
+@use "../../styles/mixins/mixins" as *;
+@use "../../styles/mixins/formField" as *;
+
+.login {
+	background-color: $backgroundPrimary;
+	min-height: 100vh;
+	@include flex();
+}
+
+
+
+.title {
+	color: $textSecondary;
+	font-size: $fontSizeH1;
+	text-align: center;
+	margin: 10px 0 80px;
+	font-weight: 600;
+}
+
+.body {
+	margin: auto;
+	width: 100%;
+}

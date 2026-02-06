@@ -31,7 +31,7 @@ export interface IUserDto {
   phone: string | null;
 }
 
-export interface IUserRes{
+export interface IUserRes {
   data: IUser[];
   pagination: {
     total: number;
@@ -39,4 +39,11 @@ export interface IUserRes{
     limit: number;
     totalPages: number;
   };
+}
+
+export interface IUserResLogin {
+  id: string;
+  email: string;
+  username: string;
+  role: "user" | "admin" | "moderator";
 }
