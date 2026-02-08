@@ -7,11 +7,11 @@ vi.mock("jsonwebtoken", () => ({
   default: {
     sign: vitest.fn(),
     verify: vitest.fn(),
-		decode: vitest.fn(),
+    decode: vitest.fn(),
   },
   sign: vitest.fn(),
   verify: vitest.fn(),
-	decode: vitest.fn(),
+  decode: vitest.fn(),
 }));
 vi.mock("argon2");
 
@@ -178,7 +178,7 @@ describe("AuthService.refresh", () => {
   let service: any;
   beforeEach(() => {
     repo = {
-      getSessionByUserId: vitest.fn(),
+      getSessionById: vitest.fn(),
       deleteSessionById: vitest.fn(),
       updateSession: vitest.fn(),
     };
@@ -188,7 +188,7 @@ describe("AuthService.refresh", () => {
 
   it("refreshes token successfully", async () => {
     const oldToken = "old-token";
-    const payload = { sub: "1", role: "user" };
+    const payload = { sub: "1", role: "user", sid: "1" };
     const newAccessToken = "new-access-token";
     const newRefreshToken = "new-refresh-token";
     const mockSession = {
@@ -198,7 +198,7 @@ describe("AuthService.refresh", () => {
       expires_at: new Date(Date.now() + 1000 * 60 * 60),
     };
 
-    repo.getSessionByUserId.mockResolvedValue(mockSession);
+    repo.getSessionById.mockResolvedValue(mockSession);
     vi.mocked(argon2.verify).mockResolvedValue(true);
     vi.mocked(jwt.verify).mockReturnValue(payload as any);
     vi.mocked(jwt.sign)
@@ -212,7 +212,7 @@ describe("AuthService.refresh", () => {
       oldToken,
       process.env.JWT_REFRESH_SECRET!,
     );
-    expect(repo.getSessionByUserId).toHaveBeenCalledWith(payload.sub);
+    expect(repo.getSessionById).toHaveBeenCalledWith(payload.sid);
     expect(argon2.verify).toHaveBeenCalledWith(
       mockSession.token_hash,
       oldToken,
@@ -247,23 +247,23 @@ describe("AuthService.refresh", () => {
     beforeEach(() => {
       process.env.JWT_REFRESH_SECRET = mockSecret;
       repo = {
-        deleteSessionByUserId: vi.fn(),
+        deleteSessionById: vi.fn(),
       };
       service = new AuthService(repo);
       vi.clearAllMocks();
     });
 
     it("logs out user successfully", async () => {
-      const userId = "user-123";
+      const sessionId = "test-session-id";
       const fakeToken = "ey-fake-token";
 
-      vi.spyOn(jwt, "decode").mockReturnValue({ sub: userId });
-      repo.deleteSessionByUserId.mockResolvedValue(undefined);
+      vi.spyOn(jwt, "decode").mockReturnValue({ sid: sessionId });
+      repo.deleteSessionById.mockResolvedValue(undefined);
 
       await service.logout(fakeToken);
 
       expect(jwt.decode).toHaveBeenCalledWith(fakeToken);
-      expect(repo.deleteSessionByUserId).toHaveBeenCalledWith(userId);
+      expect(repo.deleteSessionById).toHaveBeenCalledWith(sessionId);
     });
   });
 });
