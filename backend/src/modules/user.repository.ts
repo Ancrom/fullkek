@@ -23,28 +23,29 @@ export class UserRepository {
     return parseInt(rows[0].count);
   }
 
-  async getUserById(id: string): Promise<IUser> {
+  async getUserById(id: string): Promise<IUser | null> {
     const { rows } = await pool.query<IUserRow>(
       "SELECT * FROM users WHERE id = $1",
       [id],
     );
-    return userMapper(rows[0]);
+
+    return rows.length ? userMapper(rows[0]) : null;
   }
 
-  async getUserByEmail(email: string): Promise<IUser> {
+  async getUserByEmail(email: string): Promise<IUser | null> {
     const { rows } = await pool.query<IUserRow>(
       "SELECT * FROM users WHERE email = $1",
       [email],
     );
-    return userMapper(rows[0]);
+    return rows.length ? userMapper(rows[0]) : null;
   }
 
-  async getUserByUsername(username: string): Promise<IUser> {
+  async getUserByUsername(username: string): Promise<IUser | null> {
     const { rows } = await pool.query<IUserRow>(
       "SELECT * FROM users WHERE username = $1",
       [username],
     );
-    return userMapper(rows[0]);
+    return rows.length ? userMapper(rows[0]) : null;
   }
 
   async createUser(user: IUser): Promise<IUser> {
@@ -94,7 +95,7 @@ export class UserRepository {
     return userMapper(rows[0]);
   }
 
-  async updateUser(id: string, user: IUser): Promise<IUser> {
+  async updateUser(id: string, user: IUser): Promise<IUser | null> {
     const { rows } = await pool.query<IUserRow>(
       `UPDATE users
     		SET email = $1,
@@ -133,8 +134,7 @@ export class UserRepository {
         id,
       ],
     );
-
-    return userMapper(rows[0]);
+    return rows.length ? userMapper(rows[0]) : null;
   }
 
   async deleteUser(id: string): Promise<void> {

@@ -1,6 +1,6 @@
-import type { IUser } from "../types/user.types";
+import type { IUser, IUserRow } from "../types/user.types";
 
-export const userMapper = (raw: any): IUser => ({
+export const userMapper = (raw: IUserRow): IUser => ({
 	id: raw.id,
 	email: raw.email,
 	username: raw.username,
