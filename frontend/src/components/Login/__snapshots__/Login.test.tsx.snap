@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Login - Simple > snapshot структуры компонента 1`] = `
+<div
+  class="_login_3cd5b8"
+>
+  <div
+    class="container _container_3cd5b8"
+  >
+    <div
+      class="_body_3cd5b8"
+    >
+      <h1
+        class="_title_3cd5b8"
+      >
+        Login screen
+      </h1>
+      <div
+        data-testid="auth-form"
+      >
+        Auth Form
+      </div>
+    </div>
+  </div>
+</div>
+`;

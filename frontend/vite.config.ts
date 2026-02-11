@@ -1,5 +1,7 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,7 +16,23 @@ export default defineConfig({
     },
     hmr: {
       clientPort: 80,
-			host: "localhost",
+      host: "localhost",
+    },
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+    css: true,
+    server: {
+      deps: {
+        inline: ["zustand"],
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
     },
   },
 });

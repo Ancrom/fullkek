@@ -1,66 +1,159 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { BrowserRouter } from "react-router-dom";
+import { describe, expect, test, beforeEach } from "vitest";
+import { vi } from "vitest";
 import AuthForm from "./AuthForm";
 
-const submitAuthFormMock = vi.fn();
-vi.mock("./AuthForm.submit", () => {
+const mockNavigate = vi.fn();
+const mockLogin = vi.fn();
+const mockSearchParams = new URLSearchParams();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
   return {
-    submitAuthForm: (...args: unknown[]) => submitAuthFormMock(...args),
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useSearchParams: () => [mockSearchParams, vi.fn()],
   };
 });
 
+vi.mock("../../../store/useAuthStore", () => ({
+  default: vi.fn((selector) => {
+    const store = {
+      user: null,
+      isAuth: false,
+      login: mockLogin,
+    };
+    return selector ? selector(store) : mockLogin;
+  }),
+}));
+
 describe("AuthForm", () => {
-  it("renders form fields and buttons", () => {
-    render(<AuthForm />);
-
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Reset" })).toBeInTheDocument();
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockSearchParams.delete("redirect");
   });
 
-  it("shows validation errors on submit (user action)", async () => {
-    submitAuthFormMock.mockResolvedValue(undefined);
-    render(<AuthForm />);
+  const renderComponent = () => {
+    return render(
+      <BrowserRouter>
+        <AuthForm />
+      </BrowserRouter>,
+    );
+  };
 
-    await userEvent.type(screen.getByLabelText(/Email/i), "not-an-email");
-    await userEvent.click(screen.getByRole("button", { name: "Login" }));
+  describe("Render", () => {
+    test("should render email и password", () => {
+      renderComponent();
 
-    expect(await screen.findByText("Invalid email")).toBeInTheDocument();
-    expect(submitAuthFormMock).not.toHaveBeenCalled();
+      expect(screen.getByLabelText(/enter your email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/enter your password/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /login/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /reset/i }),
+      ).toBeInTheDocument();
+    });
   });
 
-  it("shows loading state during submit (spinner + disabled)", async () => {
-    submitAuthFormMock.mockImplementation(() => new Promise(() => {}));
-    const { container } = render(<AuthForm />);
+  describe("Validation", () => {
+    test("show error when email is invalid", async () => {
+      const user = userEvent.setup();
+      renderComponent();
 
-    await userEvent.type(screen.getByLabelText(/Email/i), "a@b.com");
-    await userEvent.type(screen.getByLabelText(/Password/i), "password1");
+      const emailInput = screen.getByLabelText(/enter your email/i);
+      await user.type(emailInput, "invalid-email");
+      await user.tab();
 
-    const submitBtn = screen.getByRole("button", { name: "Login" });
-    await userEvent.click(submitBtn);
-
-    await waitFor(() => expect(submitBtn).toBeDisabled());
-    expect(submitAuthFormMock).toHaveBeenCalledTimes(1);
-    expect(
-      container.querySelector('use[href="#icon-spinner"]'),
-    ).toBeInTheDocument();
-  });
-
-  it("renders status message set by submit handler", async () => {
-    submitAuthFormMock.mockImplementation((_values: any, helpers: any) => {
-      helpers.setStatus({ type: "success", message: "OK" });
-      helpers.setSubmitting(false);
-      return Promise.resolve();
+      await waitFor(() => {
+        expect(screen.getByText(/invalid email/i)).toBeInTheDocument();
+      });
     });
 
-    render(<AuthForm />);
+    test("show error when password is too short", async () => {
+      const user = userEvent.setup();
+      renderComponent();
 
-    await userEvent.type(screen.getByLabelText(/Email/i), "a@b.com");
-    await userEvent.type(screen.getByLabelText(/Password/i), "password1");
-    await userEvent.click(screen.getByRole("button", { name: "Login" }));
+      const passwordInput = screen.getByLabelText(/enter your password/i);
+      await user.type(passwordInput, "123");
+      await user.tab();
 
-    expect(await screen.findByText("OK")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/min 8 characters/i)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Submit form", () => {
+    test("successful submit and redirect", async () => {
+      const user = userEvent.setup();
+      mockLogin.mockResolvedValue(undefined);
+
+      renderComponent();
+
+      await user.type(
+        screen.getByLabelText(/enter your email/i),
+        "test@example.com",
+      );
+      await user.type(
+        screen.getByLabelText(/enter your password/i),
+        "password123",
+      );
+      await user.click(screen.getByRole("button", { name: /login/i }));
+
+      await waitFor(() => {
+        expect(mockLogin).toHaveBeenCalledWith({
+          email: "test@example.com",
+          password: "password123",
+        });
+        expect(mockNavigate).toHaveBeenCalledWith("/users");
+      });
+    });
+
+    test("Redirect to page from searchParams", async () => {
+      const user = userEvent.setup();
+      mockLogin.mockResolvedValue(undefined);
+      mockSearchParams.set("redirect", "/dashboard");
+
+      renderComponent();
+
+      await user.type(
+        screen.getByLabelText(/enter your email/i),
+        "test@example.com",
+      );
+      await user.type(
+        screen.getByLabelText(/enter your password/i),
+        "password123",
+      );
+      await user.click(screen.getByRole("button", { name: /login/i }));
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+      });
+    });
+  });
+
+  describe("Reset button", () => {
+    test("clears form fields on click", async () => {
+      const user = userEvent.setup();
+      renderComponent();
+
+      const emailInput = screen.getByLabelText(
+        /enter your email/i,
+      ) as HTMLInputElement;
+      const passwordInput = screen.getByLabelText(
+        /enter your password/i,
+      ) as HTMLInputElement;
+
+      await user.type(emailInput, "test@example.com");
+      await user.type(passwordInput, "password123");
+
+      await user.click(screen.getByRole("button", { name: /reset/i }));
+
+      expect(emailInput.value).toBe("");
+      expect(passwordInput.value).toBe("");
+    });
   });
 });

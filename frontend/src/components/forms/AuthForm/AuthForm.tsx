@@ -1,16 +1,23 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import useAuthStore, { type IAuthStore } from "../../../store/useAuthStore";
 import Icon from "../../ui/Icons/Icon";
-import styles from "./authForm.module.scss";
 import { submitAuthForm } from "./AuthForm.submit";
 import clsx from "clsx";
+import styles from "./authForm.module.scss";
 
 export default function AuthForm() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const login = useAuthStore((state: IAuthStore) => state.login);
+  const hooks = { navigate, searchParams, login };
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{ email: "", password: "" }}
-      onSubmit={(v, h) => submitAuthForm(v, h)}
+      onSubmit={(v, h) => submitAuthForm(v, h, hooks)}
       validationSchema={Yup.object({
         email: Yup.string().email("Invalid email").required("Required"),
         password: Yup.string().min(8, "Min 8 characters").required("Required"),
@@ -32,7 +39,7 @@ export default function AuthForm() {
                 name="email"
                 type="email"
                 placeholder="email@domain.com"
-								autoComplete="email"
+                autoComplete="email"
               />
               <ErrorMessage
                 name="email"
@@ -47,7 +54,7 @@ export default function AuthForm() {
                 name="password"
                 type="password"
                 placeholder="Password"
-								autoComplete="current-password"
+                autoComplete="current-password"
               />
               <ErrorMessage
                 name="password"

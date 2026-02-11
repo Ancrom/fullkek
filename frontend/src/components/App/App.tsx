@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
 import "./app.scss";
 import "../../styles/_container.scss";
 import UsersPage from "../../pages/users/UsersListPage";
@@ -14,11 +15,18 @@ function App() {
       <SvgSprite />
       <BrowserRouter>
         <Routes>
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/users/create" element={<UsersCreatePage />} />
-          <Route path="/users/edit/:id" element={<UsersEditPage />} />
-          <Route path="/users/:id" element={<UserPage />}></Route>
-					<Route path="/login" element={<LoginPage />} />
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/users/edit/:id" element={<UsersEditPage />} />
+            <Route path="/users/:id" element={<UserPage />}></Route>
+          </Route>
+
+          {/* Public routes */}
+          <Route>
+            <Route path="/users/create" element={<UsersCreatePage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>

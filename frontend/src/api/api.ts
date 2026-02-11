@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuthStore from "../store/useAuthStore";
 
 export const api = axios.create({
   baseURL: "/api/",
@@ -20,6 +21,7 @@ api.interceptors.response.use(
         await api.post("/auth/refresh", {}, { withCredentials: true });
         return api.request(originalRequest);
       } catch (e) {
+        useAuthStore.getState().logout;
         const currentPath = encodeURIComponent(
           window.location.pathname + window.location.search,
         );
