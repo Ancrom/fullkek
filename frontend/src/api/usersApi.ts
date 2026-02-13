@@ -28,4 +28,7 @@ export const usersApi = {
     password: string;
   }): Promise<IUserResLogin> =>
     api.post<IUser>("/auth/login", dto).then((r) => r.data),
+
+  getMe: async (): Promise<IUserResLogin> =>
+    api.get<IUser>("/auth/me").then((r) => r.data),
 };

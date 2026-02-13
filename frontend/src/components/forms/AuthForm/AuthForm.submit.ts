@@ -1,28 +1,31 @@
 import axios from "axios";
-import { usersApi } from "../../../api/usersApi";
 import type { FormikHelpers } from "formik";
+import type { NavigateFunction } from "react-router-dom";
+
+interface IsubmitAuthArgs {
+  dto: { email: string; password: string };
+  helpers: FormikHelpers<{ email: string; password: string }>;
+  hooks: {
+    navigate: NavigateFunction;
+    searchParams: URLSearchParams;
+    login: (dto: IsubmitAuthArgs["dto"]) => Promise<void>;
+  };
+}
 
 export async function submitAuthForm(
-  values: { email: string; password: string },
-  helpers: FormikHelpers<{ email: string; password: string }>,
+  dto: IsubmitAuthArgs["dto"],
+  helpers: IsubmitAuthArgs["helpers"],
+  hooks: IsubmitAuthArgs["hooks"],
 ): Promise<void> {
   try {
     helpers.setStatus(null);
-    await usersApi.login(values);
-    const params = new URLSearchParams(window.location.search);
-		const redirect = params.get("redirect");
-		window.location.href = redirect || "/users";
+    await hooks.login(dto);
+    const redirect = hooks.searchParams.get("redirect") || "/users";
+    hooks.navigate(redirect);
   } catch (error) {
-    if (
-      axios.isAxiosError(error) &&
-      (error.response?.status === 401 ||
-        error.response?.status === 400 ||
-        error.response?.status === 403)
-    ) {
-      helpers.setStatus({
-        type: "error",
-        message: error.response.data.message,
-      });
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || "An error occurred";
+      helpers.setStatus({ type: "error", message });
     }
   } finally {
     helpers.setSubmitting(false);
