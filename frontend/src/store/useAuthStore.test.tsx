@@ -29,7 +29,6 @@ describe("AuthStore", () => {
 
     const { login } = useAuthStore.getState();
 
-    // Запускаем экшен
     await login({ email: "test@test.com", password: "password" });
 
     const state = useAuthStore.getState();
