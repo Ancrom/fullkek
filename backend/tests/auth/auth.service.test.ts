@@ -1,4 +1,3 @@
-import { describe, it, expect, vitest, vi, beforeEach } from "vitest";
 import * as jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import { AuthService } from "../../src/services/auth.service";

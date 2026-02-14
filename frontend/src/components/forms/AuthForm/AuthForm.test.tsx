@@ -1,8 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import { describe, expect, test, beforeEach } from "vitest";
-import { vi } from "vitest";
 import AuthForm from "./AuthForm";
 
 const mockNavigate = vi.fn();

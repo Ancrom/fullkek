@@ -1,5 +1,3 @@
-import { describe, it, expect, vitest, beforeEach } from "vitest";
-
 import { UserService } from "../../src/services/user.service";
 
 describe("UserService.createUser", () => {

@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
 import type { IUser } from '../../../types/UserType';
 import UsersEditPage from '../UsersEditPage';
 

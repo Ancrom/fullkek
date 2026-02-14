@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from "vitest";
 import request from "supertest";
 import { app } from "../../src/server";
 import jwt from "jsonwebtoken";

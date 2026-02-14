@@ -1,6 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { vi } from "vitest";
-import { describe, expect, test } from "vitest";
 
 vi.mock("../forms/AuthForm/AuthForm", () => ({
   default: () => <div data-testid="auth-form">Auth Form</div>,
