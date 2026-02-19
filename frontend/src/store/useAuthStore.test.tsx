@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { usersApi } from "../api/usersApi";
 import useAuthStore from "../store/useAuthStore";
 
