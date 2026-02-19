@@ -1,14 +1,24 @@
 import { Pool } from "pg";
 
-let poolInstance: Pool | null = null;
+let pool: Pool | null = null;
 
 export const getPool = () => {
-  if (!poolInstance) {
-    poolInstance = new Pool({
-      connectionString: process.env.DATABASE_URL
-    });
+  if (!pool) {
+    pool = new Pool({ connectionString: process.env.DATABASE_URL });
   }
-  return poolInstance;
+  return pool;
+};
+
+export const closePool = () => pool?.end();
+
+export const resetPool = async () => {
+  if (pool) {
+    const p = pool;
+    pool = null;
+    if (!p.ended) {
+      await p.end().catch(() => {});
+    }
+  }
 };
 
 export async function truncateAll() {

@@ -1,4 +1,3 @@
-import { describe, it, expect } from "vitest";
 import { userMapper } from "../../src/mappers/userMapper";
 import type { IUser } from "../../src/types/user.types";
 
@@ -47,6 +46,7 @@ describe("userMapper", () => {
 
   it("should return undefined for missing optional fields", () => {
     const raw = { id: 1, email: "test@test.com" };
+		// @ts-expect-error
 		const result = userMapper(raw);
 		expect(result.id).toBe(raw.id);
 		expect(result.username).toBeUndefined();
@@ -54,6 +54,7 @@ describe("userMapper", () => {
   });
 
 	it('should throw error or handle null input', () => {
+		// @ts-expect-error
 		expect(() => userMapper(null)).toThrow()
 	})
 });
