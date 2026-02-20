@@ -7,7 +7,6 @@ import { pool } from "./db";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 
-
 export const app = express();
 const PORT = process.env.PORT;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
@@ -16,7 +15,7 @@ app.use(
   cors({
     origin: FRONTEND_ORIGIN,
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(cookieParser());
@@ -27,12 +26,14 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "OK" });
 });
 
+let server: any;
+
 export async function start() {
   try {
     await pool.query("SELECT 1");
     console.log("✅ PostgreSQL connected");
 
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       console.log(`✅ Server running on port ${PORT}`);
     });
   } catch (err) {
@@ -41,7 +42,18 @@ export async function start() {
   }
 }
 
-if (process.env.NODE_ENV != 'test') {
-	start()
+export async function stop() {
+  if (server) {
+    await new Promise<void>((resolve, reject) => {
+      server.close((err: any) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  }
+  await pool.end();
 }
 
+if (process.env.NODE_ENV != "test") {
+  start();
+}
