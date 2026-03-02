@@ -132,6 +132,7 @@ describe("Users API (integration)", () => {
       email: "test@test.com",
       password: "password",
     });
+		console.log(res)
     expect(res.status).toBe(200);
   });
 });
