@@ -132,6 +132,8 @@ describe("Users API (integration)", () => {
       email: "test@test.com",
       password: "password",
     });
+    console.log("JWT secret:", process.env.JWT_ACCESS_SECRET);
+    console.log("Database URL:", process.env.DATABASE_URL);
     expect(res.status).toBe(200);
   });
 });

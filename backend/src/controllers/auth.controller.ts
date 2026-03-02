@@ -9,6 +9,7 @@ const authServiceIns = new AuthService(authRepository);
 export const login = async (req: Request, res: Response) => {
   const user = req.body;
   try {
+		console.log("Login payload:", req.body);
     const { accessToken, refreshToken, userData } =
       await authServiceIns.login(user);
     cookieUtils.makeAuthCookies(res, { accessToken, refreshToken });
