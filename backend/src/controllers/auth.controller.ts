@@ -15,6 +15,7 @@ export const login = async (req: Request, res: Response) => {
     cookieUtils.makeAuthCookies(res, { accessToken, refreshToken });
     return res.status(200).json(userData);
   } catch (e) {
+		console.error("Login failed:", e);
     return handleError(res, e);
   }
 };

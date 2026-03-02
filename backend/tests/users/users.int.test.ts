@@ -134,6 +134,8 @@ describe("Users API (integration)", () => {
     });
     console.log("JWT secret:", process.env.JWT_ACCESS_SECRET);
     console.log("Database URL:", process.env.DATABASE_URL);
+    console.log("Login response body:", res.body);
+    console.log("Login response text:", res.text);
     expect(res.status).toBe(200);
   });
 });
