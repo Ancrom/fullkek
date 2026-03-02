@@ -8,6 +8,7 @@ let app: any;
 let container: any;
 
 beforeAll(async () => {
+	process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "test_secret";
   container = await setupTestDB();
 
   console.log("--- TEST CONNECTING TO:", process.env.DATABASE_URL);
@@ -18,6 +19,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   const pool = getPool();
+	await pool.query(`TRUNCATE TABLE users RESTART IDENTITY CASCADE`);
   const passwordHash = await argon2.hash("password");
   await pool.query(
     `
