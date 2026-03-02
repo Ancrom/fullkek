@@ -4,30 +4,41 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main, develop]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
+    env:
+      TESTCONTAINERS_RYUK_DISABLED: true
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: 20
+          cache: npm
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Build backend
-        run: npm run build --workspace=backend
+      - name: Init env
+        run: npm run env:init
 
-      - name: Build frontend
-        run: npm run build --workspace=frontend
+      # unit + integration tests
+      - name: Backend tests (unit + integration)
+        run: npm test --workspace=backend
+  build:
+    runs-on: ubuntu-latest
+    needs: test
 
-      - name: Run tests
-        run: npm run test --workspaces --if-present -- --run
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=backend
+      - run: npm run build --workspace=frontend
