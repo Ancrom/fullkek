@@ -15,21 +15,21 @@ export async function setupTestDB() {
   process.env.NODE_ENV = "test";
 
   const client = new Client({ connectionString: process.env.DATABASE_URL });
-
   await client.connect();
 
   const initSqlPath = path.resolve(__dirname, "../../../infra/db/init.sql");
   const sql = fs.readFileSync(initSqlPath, "utf-8");
 
+  await client.query(sql);
+
   const passwordHash = await argon2.hash("password");
   await client.query(
     `
-  INSERT INTO users (
-    id, email, username, password, first_name, last_name, role, is_active
-  ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    INSERT INTO users (id, email, username, password, first_name, last_name, role, is_active)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
   `,
     [
-      "b6252555-eb50-4665-b476-b4ba5e3eaad3",
+      "b6252555-eb50-4665-b476-b4ba5e3eaad5",
       "test@test.com",
       "testuser",
       passwordHash,
@@ -39,12 +39,6 @@ export async function setupTestDB() {
       true,
     ],
   );
-
-  for (const stmt of sql.split(/;\s*$/m)) {
-    if (stmt.trim()) {
-      await client.query(stmt);
-    }
-  }
 
   await client.end();
 
