@@ -21,7 +21,7 @@ api.interceptors.response.use(
         await api.post("/auth/refresh", {}, { withCredentials: true });
         return api.request(originalRequest);
       } catch (e) {
-        useAuthStore.getState().logout;
+        useAuthStore.getState().logout();
         const currentPath = encodeURIComponent(
           window.location.pathname + window.location.search,
         );

@@ -30,10 +30,13 @@ vi.mock('@tanstack/react-query', async () => {
   };
 });
 
-const UserFormMock = vi.fn((_props: any) => <form data-testid="user-form" />);
+const UserFormMock = vi.fn();
 vi.mock('../../../components/forms/UsersForm/UserForm', () => ({
   __esModule: true,
-  default: (props: any) => UserFormMock(props),
+    default: (props: Record<string, unknown>) => {
+    UserFormMock(props);
+    return <form data-testid="user-form" />;
+  },
 }));
 
 describe('UsersEditPage', () => {

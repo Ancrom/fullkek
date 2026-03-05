@@ -49,7 +49,12 @@ describe("AuthStore", () => {
 
   it("should reset auth status", () => {
     useAuthStore.setState({
-      authStatus: { type: "SUCCESS", user: { id: 1 } as any },
+      authStatus: { type: "SUCCESS", user: {
+				id: "1",
+				email: "",
+				username: "",
+				role: "user"
+			} },
     });
 
     useAuthStore.getState().logout();

@@ -62,7 +62,7 @@ describe('UserForm', () => {
   });
 
   it('renders status message set by submit handler', async () => {
-    submitUserFormMock.mockImplementation((_values: IUserDto, helpers: any) => {
+    submitUserFormMock.mockImplementation((_values: IUserDto, helpers) => {
       helpers.setStatus({ type: 'success', message: 'OK' });
       helpers.setSubmitting(false);
       return Promise.resolve();

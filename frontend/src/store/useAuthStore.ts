@@ -67,9 +67,10 @@ const useAuthStore = create<IAuthStore>()(
       });
     },
     setLoginStatus: (status) => {
-      set((state) => {
-        state.authStatus = status as any;
-      });
+      set((state) => ({
+        ...state,
+        authStatus: status,
+      }));
     },
   })),
 );
