@@ -75,8 +75,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            user/fullkek-backend:${{ github.sha }}
-            user/fullkek-backend:latest
+            ancrom/fullkek-backend:${{ github.sha }}
+            ancrom/fullkek-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -86,7 +86,7 @@ jobs:
           context: ./frontend
           push: true
           tags: |
-            user/fullkek-frontend:${{ github.sha }}
-            user/fullkek-frontend:latest
+            ancrom/fullkek-frontend:${{ github.sha }}
+            ancrom/fullkek-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
