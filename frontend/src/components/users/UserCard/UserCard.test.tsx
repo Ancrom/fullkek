@@ -38,9 +38,9 @@ describe('UserCard', () => {
     expect(screen.getByText(USER.role)).toBeInTheDocument();
     expect(screen.getByText('active')).toBeInTheDocument();
     expect(screen.getByText('Last login at:')).toBeInTheDocument();
-    expect(screen.getByText(USER.lastLoginAt)).toBeInTheDocument();
+    expect(screen.getByText(USER.lastLoginAt!)).toBeInTheDocument();
     expect(screen.getByText('Phone number:')).toBeInTheDocument();
-    expect(screen.getByText(USER.phone)).toBeInTheDocument();
+    expect(screen.getByText(USER.phone!)).toBeInTheDocument();
 
     const editLink = screen.getByRole('link');
     expect(editLink).toHaveAttribute('href', `/users/edit/${USER.id}`);

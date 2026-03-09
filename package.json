@@ -11,10 +11,18 @@
     "test": "npm test --workspaces --if-present -- --run",
     "test:f": "npm test --workspace=frontend -- --run",
     "test:b": "npm test --workspace=backend -- --run",
-    "test:b:i": "npm run test:int --workspace=backend"
+    "test:b:i": "npm run test:int --workspace=backend",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.3",
     "concurrently": "^9.2.1",
-    "jsdom": "^28.0.0"
+    "eslint": "^9.39.3",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "jsdom": "^28.0.0",
+    "typescript-eslint": "^8.56.1"
   }
 }

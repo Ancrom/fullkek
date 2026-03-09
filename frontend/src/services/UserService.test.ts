@@ -60,7 +60,7 @@ describe("formatDate", () => {
   });
 
   it("returns empty string if date is null or undefined", () => {
-		// @ts-expect-error
+		// @ts-expect-error: testing runtime fallback for undefined value
     expect(formatDate(undefined)).toEqual("");
   });
 
@@ -80,21 +80,21 @@ describe("transformUser", () => {
   });
 
   it("returns default user if param is null", () => {
-    // @ts-expect-error
+    // @ts-expect-error: testing runtime fallback for null value
     expect(transformUser(null)).toEqual({
       ...DEFAULT_USER,
     });
   });
 
   it("returns default user if param is empty object", () => {
-    // @ts-expect-error
+    // @ts-expect-error: testing runtime fallback for empty object value
     expect(transformUser({})).toEqual({
       ...DEFAULT_USER,
     });
   });
 
   it("returns default user if user is invalid", () => {
-    // @ts-expect-error
+    // @ts-expect-error: testing runtime fallback for invalid user value
     expect(transformUser("invalid-user")).toEqual({
       ...DEFAULT_USER,
     });
@@ -128,7 +128,7 @@ describe("fetchUsersService", () => {
   });
 
   it("calls API with default parameters (page = 1, limit = 10)", async () => {
-    // @ts-expect-error
+    // @ts-expect-error: testing runtime fallback for invalid page value
     vi.mocked(usersApi.fetchUsers).mockResolvedValue({});
     await fetchUsersService();
     expect(usersApi.fetchUsers).toHaveBeenCalledWith(1, 10);
@@ -150,7 +150,7 @@ describe("fetchUsersService", () => {
   });
 
   it("returns empty array if response is invalid", async () => {
-    // @ts-expect-error
+    // @ts-expect-error: testing runtime fallback for invalid response value
     vi.mocked(usersApi.fetchUsers).mockResolvedValue(null);
     const result = await fetchUsersService(1, 10);
     expect(result.length).toBe(0);
