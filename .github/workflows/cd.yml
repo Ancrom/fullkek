@@ -1,0 +1,44 @@
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Тег образа (SHA коммита)'
+        required: true
+      environment:
+        type: choice
+        description: 'Целевое окружение'
+        required: true
+        options:
+          - test
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Deploy to K3s
+        run: |
+          NAMESPACE=${{ github.event.inputs.environment }}
+          TAG=${{ github.event.inputs.image_tag }}
+          REGISTRY="89.110.105.147:5000"
+
+          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+
+          sed -i "s|image: $REGISTRY/fullkek-backend:.*|image: $REGISTRY/fullkek-backend:$TAG|g" k8s/backend-deploy.yaml
+          sed -i "s|image: $REGISTRY/fullkek-frontend:.*|image: $REGISTRY/fullkek-frontend:$TAG|g" k8s/frontend-deploy.yaml
+
+          kubectl apply -f k8s/backend-deploy.yaml -n $NAMESPACE
+          kubectl apply -f k8s/frontend-deploy.yaml -n $NAMESPACE
+
+          kubectl rollout status deployment/fullkek-backend -n $NAMESPACE --timeout=60s
+          kubectl rollout status deployment/fullkek-frontend -n $NAMESPACE --timeout=60s
