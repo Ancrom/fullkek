@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullkek-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fullkek-backend
+  template:
+    metadata:
+      labels:
+        app: fullkek-backend
+    spec:
+      containers:
+      - name: backend
+        image: 89.110.105.147:5000/fullkek-backend:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fullkek-backend
+spec:
+  selector:
+    app: fullkek-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
