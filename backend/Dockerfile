@@ -13,4 +13,4 @@ RUN npm run build --workspace=backend
 WORKDIR /app/backend
 
 EXPOSE 3000
-CMD ["node", "dist/server.js"]
+CMD ["node", "backend/dist/server.js"]
