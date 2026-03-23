@@ -61,13 +61,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create buildkit config
+        run: |
+          cat <<EOF > buildkitd.toml
+          [registry."89.110.105.147:5000"]
+            http = true
+            insecure = true
+          EOF
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          config: |
-            [registry."89.110.105.147:5000"]
-              http = true
-              insecure = true
+          buildkitd-config: buildkitd.toml
 
       - name: Build and push backend
         uses: docker/build-push-action@v5
