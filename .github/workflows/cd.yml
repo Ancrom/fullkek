@@ -37,6 +37,7 @@ jobs:
           sed -i "s|image: $REGISTRY/fullkek-backend:.*|image: $REGISTRY/fullkek-backend:$TAG|g" k8s/backend-deploy.yaml
           sed -i "s|image: $REGISTRY/fullkek-frontend:.*|image: $REGISTRY/fullkek-frontend:$TAG|g" k8s/frontend-deploy.yaml
 
+          kubectl apply -f k8s/db.yaml -n $NAMESPACE
           kubectl apply -f k8s/backend-deploy.yaml -n $NAMESPACE
           kubectl apply -f k8s/frontend-deploy.yaml -n $NAMESPACE
 
