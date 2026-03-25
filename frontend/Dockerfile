@@ -13,5 +13,7 @@ RUN npm run build --workspace=frontend
 FROM nginx:alpine
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 
+COPY infra/nginx-frontend.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
