@@ -34,12 +34,12 @@ jobs:
 
           kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
 
-          sed -i "s|image: $REGISTRY/fullkek-backend:.*|image: $REGISTRY/fullkek-backend:$TAG|g" k8s/backend-deploy.yaml
-          sed -i "s|image: $REGISTRY/fullkek-frontend:.*|image: $REGISTRY/fullkek-frontend:$TAG|g" k8s/frontend-deploy.yaml
+          sed -i "s|image: $REGISTRY/backend:.*|image: $REGISTRY/backend:$TAG|g" k8s/backend-deploy.yaml
+          sed -i "s|image: $REGISTRY/frontend:.*|image: $REGISTRY/frontend:$TAG|g" k8s/frontend-deploy.yaml
 
           kubectl apply -f k8s/db.yaml -n $NAMESPACE
           kubectl apply -f k8s/backend-deploy.yaml -n $NAMESPACE
           kubectl apply -f k8s/frontend-deploy.yaml -n $NAMESPACE
 
-          kubectl rollout status deployment/fullkek-backend -n $NAMESPACE --timeout=60s
-          kubectl rollout status deployment/fullkek-frontend -n $NAMESPACE --timeout=60s
+          kubectl rollout status deployment/backend -n $NAMESPACE --timeout=60s
+          kubectl rollout status deployment/frontend -n $NAMESPACE --timeout=60s
