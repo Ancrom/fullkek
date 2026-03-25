@@ -30,8 +30,16 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: password
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
         ports:
         - containerPort: 5432
+      volumes:
+      - name: init-script
+        configMap:
+          name: db-init-script
 ---
 apiVersion: v1
 kind: Service
