@@ -30,6 +30,16 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: password
+        - name: JWT_ACCESS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: jwt_access
+        - name: JWT_REFRESH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: jwt_refresh
         volumeMounts:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d/init.sql
