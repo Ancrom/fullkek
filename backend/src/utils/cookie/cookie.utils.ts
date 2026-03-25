@@ -1,10 +1,11 @@
 import { Response } from "express";
-import path from "path";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: "strict" as const,
+  // secure: true,
+  // sameSite: "strict" as const,
+	secure: false,
+	sameSite: "lax" as const,
   path: "/",
 };
 
