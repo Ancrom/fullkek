@@ -52,7 +52,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   const id = req.params.id as string;
   try {
     userServiceIns.deleteUser(id);
-    return res.status(200).json({ message: "User deleted successfully" });
+    return res.status(204).json({ message: "User deleted successfully" });
   } catch (e) {
     return handleError(res, e);
   }

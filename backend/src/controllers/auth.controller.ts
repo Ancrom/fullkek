@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 import { handleError } from "./handleError";
 import { AuthService } from "../services/auth.service";
+import { userRepository } from "../modules/user.repository";
 import { authRepository } from "../modules/auth.repository";
 import cookieUtils from "../utils/cookie/cookie.utils";
 
-const authServiceIns = new AuthService(authRepository);
+const authServiceIns = new AuthService(authRepository, userRepository);
 
 export const login = async (req: Request, res: Response) => {
   const user = req.body;
