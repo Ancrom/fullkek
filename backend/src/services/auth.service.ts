@@ -1,4 +1,5 @@
 import { AuthRepository } from "../modules/auth.repository";
+import { UserRepository } from "../modules/user.repository";
 import { UnauthorizedError, ForbiddenError } from "../errors/HttpError";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
@@ -6,9 +7,10 @@ import type { IUser } from "../types/user.types";
 import type { IJWTPayload } from "../types/auth.types";
 
 export class AuthService {
-  constructor(private repo: AuthRepository) {
-    this.repo = repo;
-  }
+  constructor(
+    private authRepo: AuthRepository,
+    private userRepo: UserRepository,
+  ) {}
 
   private REFRESH_TOKEN_TTL = 1000 * 60 * 60 * 24 * 7; // 7 дней;
 
@@ -37,7 +39,7 @@ export class AuthService {
   }
 
   private async getUserByEmail(email: string): Promise<IUser> {
-    const user: IUser = await this.repo.getUserByEmail(email);
+    const user: IUser | null = await this.userRepo.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedError("Invalid email or password");
     }
@@ -59,11 +61,15 @@ export class AuthService {
       role: user.role,
       sid: uuid,
     });
-    await this.repo.createSession({
+    await this.authRepo.createSession({
       id: uuid,
       userId: user.id,
       tokenHash: await argon2.hash(tokens.refreshToken),
       expiresAt: new Date(Date.now() + this.REFRESH_TOKEN_TTL),
+    });
+    await this.userRepo.updateUser(user.id, {
+      ...user,
+      lastLoginAt: new Date(),
     });
 
     return {
@@ -81,7 +87,7 @@ export class AuthService {
         token,
         process.env.JWT_ACCESS_SECRET!,
       ) as IJWTPayload;
-      const user = await this.repo.getUserById(payload.sub);
+      const user = await this.userRepo.getUserById(payload.sub);
 
       if (!user) {
         throw new UnauthorizedError("User not found");
@@ -110,7 +116,7 @@ export class AuthService {
       sid: string;
     };
 
-    const session = await this.repo.getSessionById(payload.sid);
+    const session = await this.authRepo.getSessionById(payload.sid);
     if (!session) {
       throw new ForbiddenError("Session not found");
     }
@@ -119,7 +125,7 @@ export class AuthService {
     const isExpired = new Date() > new Date(session.expires_at);
 
     if (!isValid || isExpired) {
-      await this.repo.deleteSessionById(session.id);
+      await this.authRepo.deleteSessionById(session.id);
       throw new ForbiddenError("Invalid or expired session");
     }
 
@@ -129,7 +135,7 @@ export class AuthService {
       sid: session.id,
     });
 
-    await this.repo.updateSession({
+    await this.authRepo.updateSession({
       id: session.id,
       tokenHash: await argon2.hash(tokens.refreshToken),
       expiresAt: new Date(Date.now() + this.REFRESH_TOKEN_TTL),
@@ -143,7 +149,7 @@ export class AuthService {
       const payload = jwt.decode(refreshToken) as { sid?: string } | null;
 
       if (payload?.sid) {
-        await this.repo.deleteSessionById(payload.sid);
+        await this.authRepo.deleteSessionById(payload.sid);
       }
     } catch (e) {
       console.error("Logout failed at DB level", e);

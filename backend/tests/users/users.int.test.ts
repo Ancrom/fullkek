@@ -124,7 +124,7 @@ describe("Users API (integration)", () => {
       .delete(`/api/users/${idExample}`)
       .set("Cookie", getAuthCookie());
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(204);
   });
 
   it("logins user", async () => {
